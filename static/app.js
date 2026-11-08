@@ -40,7 +40,10 @@ const UI = {
     spokenPlan: "{plan}: {price} rupees per month, {setup} rupees one-time setup, {months} month plan.", back: "Welcome back. I remember our chat.", micTip: "Talk instead of typing",
     needsT: "What do you need?", needsSub: "Tap to add or remove. The price updates instantly.", gnet: "Internet", gphone: "Phones", gsafe: "Safety and backup", ggrow: "Grow online", gteam: "Team tools",
     pendingGst: "needs GST, to confirm", waitFor: "Still to confirm", w_city: "your city", w_staff: "team size", w_gst: "GST", picked: "Your picks are in the plan.", lockedPre: "Not available: ",
-    listenFree: "Listening… just talk, I'll understand", botName: "Sahayak AI", you: "You"
+    listenFree: "Listening… just talk, I'll understand", botName: "Sahayak AI", you: "You",
+    saveT: "You save {x} / month", saveSub: "Compared with the {y} you pay today", moreT: "{x}/month more", moreSub: "Than the {y} you pay today",
+    sameT: "Same as today", sameSub: "Matches the {y} you pay today", superseded: "Superseded", bestFit: "Best fit for you",
+    needsSel: "{n} selected", add: "Add", tapToggle: "Tap to toggle", optional: "Optional", whatIn: "What's in this plan"
   },
   hi: {
     sub: "Accel Business · ऑनलाइन", ph: "संदेश लिखें…", steps: ["चैट", "प्लान", "कागज़ात", "ट्रैक"],
@@ -79,12 +82,18 @@ const UI = {
     spokenPlan: "{plan}: {price} रुपये प्रति माह, {setup} रुपये एक बार का सेटअप, {months} महीने का प्लान।", back: "वापसी पर स्वागत है। मुझे हमारी बातचीत याद है।", micTip: "टाइप करने की जगह बोलिए",
     needsT: "आपको क्या चाहिए?", needsSub: "जोड़ने या हटाने के लिए टैप करें। भाव तुरंत बदलता है।", gnet: "इंटरनेट", gphone: "फ़ोन", gsafe: "सुरक्षा और बैकअप", ggrow: "ऑनलाइन बढ़ें", gteam: "टीम के औज़ार",
     pendingGst: "GST चाहिए, पक्का करना है", waitFor: "अभी पक्का करना है", w_city: "आपका शहर", w_staff: "टीम का आकार", w_gst: "GST", picked: "आपकी पसंद प्लान में है।", lockedPre: "उपलब्ध नहीं: ",
-    listenFree: "सुन रहा हूँ… बस बोलिए, मैं समझ लूँगा", botName: "सहायक AI", you: "आप"
+    listenFree: "सुन रहा हूँ… बस बोलिए, मैं समझ लूँगा", botName: "सहायक AI", you: "आप",
+    saveT: "हर महीने {x} की बचत", saveSub: "आज के {y} के मुकाबले", moreT: "हर महीने {x} ज़्यादा", moreSub: "आज के {y} से",
+    sameT: "आज के बराबर", sameSub: "आज के {y} जितना", superseded: "पुराना", bestFit: "आपके लिए सबसे सही",
+    needsSel: "{n} चुने गए", add: "जोड़ें", tapToggle: "टैप करें", optional: "वैकल्पिक", whatIn: "इस प्लान में क्या है"
   }
 };
-const ICON = { P01: "🌐", P02: "🌐", P03: "🌐", P04: "📡", P05: "🔌", P06: "☎️", P07: "📱", P08: "📟", P09: "🔁", P10: "🔀", P11: "📞", P12: "🎥", P13: "📍", P14: "📶",
-  P15: "💬", P16: "✉️", P17: "☁️", P18: "🌍", P19: "🧾", P20: "🛡️", P21: "🏭", P22: "🏠", P23: "📹", P24: "📞", P25: "📒" };
-const DOC_ICON = { gst_certificate: "🧾", udyam_certificate: "🏷️", signatory_id: "🪪", address_proof: "🏠" };
+/* Material Symbols names per catalogue product */
+const ICON = { P01: "router", P02: "router", P03: "router", P04: "settings_input_antenna", P05: "cable", P06: "call", P07: "sim_card", P08: "memory", P09: "sync_alt",
+  P10: "alt_route", P11: "support_agent", P12: "videocam", P13: "lan", P14: "wifi", P15: "chat", P16: "mail", P17: "cloud_upload", P18: "language",
+  P19: "point_of_sale", P20: "shield", P21: "precision_manufacturing", P22: "wifi_lock", P23: "videocam", P24: "headset_mic", P25: "receipt_long" };
+const DOC_ICON = { gst_certificate: "receipt_long", udyam_certificate: "badge", signatory_id: "id_card", address_proof: "home" };
+const GROUP_ICON = { net: "wifi", phone: "call", safe: "shield", grow: "storefront", team: "groups" };
 const STAGE_IDX = { chat: 0, plan: 1, declined: 1, kyc: 2, order: 3 };
 
 const LANGS = { en: ["en-IN", "English"], hi: ["hi-IN", "हिन्दी"], mr: ["mr-IN", "मराठी"], ta: ["ta-IN", "தமிழ்"], te: ["te-IN", "తెలుగు"],
@@ -245,32 +254,34 @@ function countsCard() {
   const el = h("div", { class: "card" });
   let staff = 5, sites = 1;
   const row = (title, sub, get, set, min, max) => {
-    const out = h("input", { class: "num", type: "number", inputmode: "numeric", min, max, value: get(), "aria-label": title, style: "width:64px;text-align:center;font-size:22px;font-weight:800;border:0;background:transparent;color:inherit;font-family:inherit" });
+    const out = h("input", { type: "number", inputmode: "numeric", min, max, value: get(), "aria-label": title });
     out.oninput = () => { set(Math.max(min, Math.min(max, parseInt(out.value) || min))); };
-    const mk = (d, t) => h("button", { type: "button", "aria-label": t, text: d > 0 ? "+" : "−", onclick: () => { set(Math.max(min, Math.min(max, get() + d))); out.value = get(); } });
-    return h("div", { class: "r" }, h("div", {}, h("b", { text: title }), h("small", { text: sub })), h("div", { class: "stepper2" }, mk(-1, "less"), out, mk(1, "more")));
+    const mk = (d, t) => h("button", { type: "button", "aria-label": t, html: ic(d > 0 ? "add" : "remove"), onclick: () => { set(Math.max(min, Math.min(max, get() + d))); out.value = get(); } });
+    return h("div", { class: "r" }, h("div", {}, h("b", { text: title }), h("small", { text: sub })), h("div", { class: "stp" }, mk(-1, "less"), out, mk(1, "more")));
   };
-  const go = h("button", { class: "btn", type: "button", text: U.go + " →" });
+  const go = h("button", { class: "btn", type: "button", html: esc(U.go) + ic("arrow_forward") });
+  const conf = h("div", { class: "confirmed" });
   go.onclick = () => {
-    el.classList.add("done"); go.disabled = true;
-    say(U.youSaid.replace("{a}", staff).replace("{b}", sites), "", { slot: "counts", staff, sites });
+    const said = U.youSaid.replace("{a}", staff).replace("{b}", sites);
+    el.classList.add("done"); go.disabled = true; conf.innerHTML = ic("check", "sm") + esc(said);
+    say(said, "", { slot: "counts", staff, sites });
   };
   el.append(h("div", { class: "counts interactive" },
     row(U.people, U.peopleSub, () => staff, v => staff = v, 1, 500),
     row(U.branches, U.branchesSub, () => sites, v => sites = v, 1, 50),
-    h("div", { style: "padding-top:8px" }, go)));
+    h("div", { style: "padding-top:6px" }, go)), conf);
   return el;
 }
 
 function handoffCard() {
   const U = ui();
-  return h("div", { class: "card" }, h("div", { class: "handoff" }, h("div", { class: "ico", text: "🤝" }), h("div", {}, h("b", { text: U.handTitle }), h("p", { text: U.handSub }))));
+  return h("div", { class: "card" }, h("div", { class: "handoff" }, h("div", { class: "ico", html: ic("support_agent") }), h("div", {}, h("b", { text: U.handTitle }), h("p", { text: U.handSub }))));
 }
 
 /* ---- plan card ---- */
 function planCard(c) {
   document.querySelectorAll(".card.plan").forEach(e => e.classList.add("stale"));
-  const el = h("div", { class: "card plan" });
+  const el = h("div", { class: "card plan" + (c.smaller ? " smaller" : "") });
   el._opts = { handoff: c.handoff, smaller: c.smaller };
   S.quote = c.quote;
   paintPlan(el, c.quote);
@@ -314,35 +325,41 @@ function paintPlan(el, q, animate) {
   el._quote = q;
   let sav = "";
   if (q.savings) {
-    const d = q.savings.diff;
-    sav = d > 0 ? `<div class="save good">💚 ${esc(U.save.replace("{x}", inr(d)).replace("{y}", inr(q.savings.spend)))}</div>`
-      : d < 0 ? `<div class="save neutral">ℹ️ ${esc(U.more.replace("{x}", inr(-d)).replace("{y}", inr(q.savings.spend)))}</div>`
-        : `<div class="save neutral">${esc(U.same.replace("{y}", inr(q.savings.spend)))}</div>`;
+    const d = q.savings.diff, y = inr(q.savings.spend);
+    const [k, icon, t, sub] = d > 0 ? ["good", "trending_down", U.saveT.replace("{x}", inr(d)), U.saveSub]
+      : d < 0 ? ["neutral", "info", U.moreT.replace("{x}", inr(-d)), U.moreSub] : ["neutral", "drag_handle", U.sameT, U.sameSub];
+    sav = `<div class="save ${k}">${ic(icon)}<div><b>${esc(t)}</b><p>${esc(sub.replace("{y}", y))}</p></div></div>`;
   }
-  const items = q.items.map(i => `
-    <div class="item"><div class="ico" aria-hidden="true">${ICON[i.id] || "📦"}</div>
-      <div class="m"><b>${esc(i.name)}</b>${i.qty > 1 && !i.editable ? `<span class="xqty">×${i.qty}</span>` : ""}${i.auto_added ? `<span class="pill">${esc(U.added)}</span>` : ""}
-        <p>${esc(i.reason)}</p>
-        ${i.editable && !o.smaller ? `<div class="qty interactive"><button data-act="dec" data-id="${i.id}" aria-label="Less ${esc(i.name)}" ${i.qty <= i.min_qty ? "disabled" : ""}>−</button><span>${i.qty}</span><button data-act="inc" data-id="${i.id}" aria-label="More ${esc(i.name)}">+</button></div>` : ""}
+  const itemRow = i => `
+    <div class="item"><div class="ico">${ic(ICON[i.id] || "inventory_2")}</div>
+      <div class="m"><b>${esc(i.name)}</b>${i.qty > 1 && !i.editable ? `<span class="xqty">×${i.qty}</span>` : ""}
+        <p>${esc(i.reason)}</p>${i.auto_added ? `<span class="pill">${esc(U.added)}</span>` : ""}
+        ${i.editable && !o.smaller ? `<div class="qty interactive"><button data-act="dec" data-id="${i.id}" aria-label="Less ${esc(i.name)}" ${i.qty <= i.min_qty ? "disabled" : ""}>${ic("remove", "sm")}</button><span>${i.qty}</span><button data-act="inc" data-id="${i.id}" aria-label="More ${esc(i.name)}">${ic("add", "sm")}</button></div>` : ""}
       </div>
-      <div class="p">${inr(i.monthly)}<small>${i.qty > 1 ? `${inr(i.unit)} × ${i.qty}` : "/" + esc(U.month)}</small></div></div>`).join("");
-  const extras = (!o.smaller && q.extras.length) ? `<div class="sec interactive"><h4>${esc(U.extras)}</h4>${q.extras.map(x => `
-    <label class="extra ${x.allowed ? "" : "locked"}"><div class="ico" aria-hidden="true">${x.allowed ? ICON[x.id] || "➕" : "🔒"}</div>
-      <div class="m"><b>${esc(x.name)} <span style="color:var(--ink-2);font-weight:600">+${inr(x.price)}</span></b>
-        <p class="${x.allowed ? "" : "lock"}">${esc(x.allowed ? x.blurb : x.reason)}</p></div>
+      <div class="p">${inr(i.monthly)}<small>${i.qty > 1 ? `${inr(i.unit)} × ${i.qty}` : "/" + esc(U.month)}</small></div></div>`;
+  const items = q.items.map(itemRow).join("");
+  const extras = (!o.smaller && q.extras.length) ? `<div class="sec interactive"><div class="sec-h"><h4>${esc(U.extras)} <small>(${esc(U.optional)})</small></h4><small>${esc(U.tapToggle)}</small></div>${q.extras.map(x => `
+    <label class="extra ${x.allowed ? "" : "locked"}"><div class="ico">${ic(x.allowed ? ICON[x.id] || "add" : "lock")}</div>
+      <div class="m"><b>${esc(x.name)} <em>+${inr(x.price)}/${esc(U.month)}</em></b>
+        <p>${esc(x.blurb)}</p>${x.allowed ? "" : `<span class="pill red lock-r">${esc(x.reason)}</span>`}</div>
       <span class="sw"><input type="checkbox" data-extra="${x.id}" ${x.on ? "checked" : ""} ${x.allowed ? "" : "disabled"} aria-label="${esc(x.name)}"><i></i></span></label>`).join("")}</div>` : "";
-  const refused = q.refused.length ? `<div class="sec"><h4>${esc(U.notIncluded)}</h4>${q.refused.map(r => {
+  const refused = q.refused.length ? `<div class="sec">${q.refused.map(r => {
     const alts = (r.alternatives || []).map(a => a.name);
-    return `<div class="refused"><span class="x">⚠️</span><div><b>${esc(r.name)}</b><p>${esc(r.reason)}</p>${alts.length ? `<p class="alt">${esc(U.nearest)}: ${esc(alts.join(" / "))}</p>` : ""}</div></div>`;
+    return `<div class="refused">${ic("info")}<div><b>${esc(U.notIncluded)}: ${esc(r.name)}</b><p>${esc(r.reason)}</p>${alts.length ? `<div class="alt">${esc(U.nearest)}: ${esc(alts.join(" / "))}</div>` : ""}</div></div>`;
   }).join("")}</div>` : "";
+  const arrow = t => esc(t.replace(/\s*→\s*$/, "")) + ic("arrow_forward");
   const cta = o.smaller ? "" : o.handoff
-    ? `<div class="cta interactive"><div class="fine">🤝 ${esc(U.handoffNote)}</div><button class="btn ghost" data-act="cta" ${q.items.length ? "" : "disabled"}>${esc(U.contAnyway)}</button></div>`
-    : `<div class="cta interactive"><button class="btn" data-act="cta" ${q.items.length ? "" : "disabled"}>${esc(U.cont)}</button><div class="fine">${esc(U.ask)}</div></div>`;
+    ? `<div class="cta interactive"><div class="handoff-b"><div class="ico">${ic("support_agent")}</div><div><b>${esc(U.handTitle)}</b><p>${esc(U.handoffNote)}</p></div></div><button class="btn ghost" data-act="cta" ${q.items.length ? "" : "disabled"}>${arrow(U.contAnyway)}</button></div>`
+    : `<div class="cta interactive"><button class="btn" data-act="cta" ${q.items.length ? "" : "disabled"}>${arrow(U.cont)}</button><div class="fine">${ic("lock", "xs")}${esc(U.ask)}</div></div>`;
+  const meta = `<div class="meta"><span>${ic("build")}${inr(T.setup)} ${esc(U.setup)}</span><span>${ic("calendar_month")}${esc(U.months.replace("{n}", T.contract_months))}</span><span>${ic("bolt")}${esc(T.expected_days > 0 ? U.live.replace("{n}", T.expected_days) : U.liveSame)}</span></div>`;
+  const body = o.smaller
+    ? (items ? `<details><summary>${esc(U.included)}</summary>${items}</details>` : "")
+    : `${sav}<div class="sec"><div class="sec-h"><h4>${esc(U.whatIn)}</h4></div>${items || "<p class='fine'>—</p>"}</div>${extras}${refused}${cta}`;
   el.innerHTML = `
-    <div class="card-h"><span class="tag">${esc(o.smaller ? U.smaller : U.recommended)}</span><h3>${esc(q.plan_name)}</h3><p>${esc(q.tagline)}</p></div>
-    <div class="price"><div class="big" data-now="${T.monthly}">${inr(T.monthly)}<small> /${esc(U.month)}</small></div>
-      <div class="sub"><span>🧾 ${inr(T.setup)} ${esc(U.setup)}</span><span>📅 ${esc(U.months.replace("{n}", T.contract_months))}</span><span>🚚 ${esc(T.expected_days > 0 ? U.live.replace("{n}", T.expected_days) : U.liveSame)}</span></div>${sav}</div>
-    <div class="sec"><h4>${esc(U.included)}</h4>${items || "<p class='fine'>—</p>"}</div>${extras}${refused}${cta}`;
+    <div class="plan-band">${ic(o.smaller ? "compress" : "verified")}<span>${esc(o.smaller ? U.smaller : U.recommended + " · " + U.bestFit)}</span><span class="pill gray stale-tag">${esc(U.superseded)}</span></div>
+    <div class="card-h"><h3>${esc(q.plan_name)}</h3><p>${esc(q.tagline)}</p></div>
+    <div class="price"><div class="big num" data-now="${T.monthly}">${inr(T.monthly)}<small>/${esc(U.month)}</small></div>${o.smaller ? "" : meta}</div>
+    ${body}`;
   if (animate && prevVal !== null) countUp(el.querySelector(".big"), prevVal, T.monthly);
 }
 
@@ -914,22 +931,33 @@ function needsCard(tiles) {
 function paintNeeds(el, groups) {
   const U = ui(); el._tiles = groups;
   const GN = { net: U.gnet, phone: U.gphone, safe: U.gsafe, grow: U.ggrow, team: U.gteam };
-  el.innerHTML = `<div class="card-h"><span class="tag">🛠️</span><h3>${esc(U.needsT)}</h3><p>${esc(U.needsSub)}</p></div>` + groups.map(g => `
-    <div class="sec interactive"><h4>${esc(GN[g.id] || g.id)}</h4><div class="tiles">${g.tiles.map(t => `
-      <div class="tile ${t.qty ? "on" : ""} ${t.allowed ? "" : "locked"}">
+  const all = groups.flatMap(g => g.tiles), picked = all.filter(t => t.qty).length;
+  const pq = S.preview && S.preview.quote;
+  const sum = picked ? `<div class="needs-sum"><span>${ic("shopping_bag")}${esc(U.needsSel.replace("{n}", picked))}</span>${pq ? `<b>${inr(pq.totals.monthly)} / ${esc(U.month)}</b>` : ""}</div>` : "";
+  const tile = t => {
+    const lockedBtm = !t.allowed ? `<div class="tnote lock">${ic("info", "xs")}${esc(t.reason)}</div>` : "";
+    const pend = t.pending ? `<div class="tnote pend">${ic("hourglass_top", "xs")}${esc(U.pendingGst)}</div>` : "";
+    const ctl = !t.allowed ? "" : t.qty
+      ? (t.editable ? `<div class="tq"><button data-need="dec" data-id="${t.id}" aria-label="Less ${esc(t.name)}">${ic("remove", "sm")}</button><span>${t.qty}</span><button data-need="inc" data-id="${t.id}" aria-label="More ${esc(t.name)}">${ic("add", "sm")}</button></div>` : "")
+      : `<button class="tadd" data-need="toggle" data-id="${t.id}" tabindex="-1" aria-hidden="true">${ic("add", "sm")}${esc(U.add)}</button>`;
+    return `<div class="tile ${t.qty ? "on" : ""} ${t.allowed ? "" : "locked"}">
         <button class="tmain" data-need="toggle" data-id="${t.id}" aria-pressed="${t.qty ? "true" : "false"}" aria-label="${esc(t.name)}">
-          <span class="ti">${t.allowed ? ICON[t.id] || "📦" : "🔒"}</span>
+          <span class="ico">${ic(ICON[t.id] || "inventory_2")}</span>
           <span class="tn">${esc(t.name)}</span>
-          <span class="tp">+${inr(t.price)}${t.pending ? " ⏳" : ""}</span>
-          <span class="tc">${t.qty ? "✓" : ""}</span>
+          ${t.blurb ? `<span class="tb">${esc(t.blurb)}</span>` : ""}
+          <span class="tp">+${inr(t.price)}/${esc(U.month)}</span>
         </button>
-        ${t.qty && t.editable ? `<div class="tq"><button data-need="dec" data-id="${t.id}" aria-label="Less">−</button><span>${t.qty}</span><button data-need="inc" data-id="${t.id}" aria-label="More">+</button></div>` : ""}
-      </div>`).join("")}</div></div>`).join("");
+        <span class="tc">${ic("check")}</span>${t.allowed ? "" : `<span class="tl-lock">${ic("lock", "sm")}</span>`}
+        ${pend}${lockedBtm}${ctl}
+      </div>`;
+  };
+  el.innerHTML = `<div class="card-h"><h3>${esc(U.needsT)}</h3><p>${esc(U.needsSub)}</p></div>${sum}` + groups.map((g, gi) => `
+    <div class="sec interactive"><div class="grp-h">${ic(GROUP_ICON[g.id] || "category", "sm")}${String.fromCharCode(65 + gi)}. ${esc(GN[g.id] || g.id)}</div><div class="tiles">${g.tiles.map(tile).join("")}</div></div>`).join("");
 }
 function syncNeeds(tiles) {
   const el = S.needsEl; if (!el || !document.contains(el)) return;
   if (tiles) paintNeeds(el, tiles);
-  else if (!el.classList.contains("done")) { el.classList.add("done"); el.innerHTML = `<div class="card-h"><span class="tag">🛠️</span><p>${esc(ui().picked)}</p></div>`; }
+  else if (!el.classList.contains("done")) { el.classList.add("done"); el.innerHTML = `<div class="needs-done">${ic("check_circle", "fill")}${esc(ui().picked)}</div>`; }
 }
 async function tapNeed(payload) {                 // instant: no typing delay, price updates at once
   try {
