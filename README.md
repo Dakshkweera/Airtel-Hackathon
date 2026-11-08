@@ -76,11 +76,20 @@ Multi-Store ₹5,195 per site, Factory Connect ₹16,025).
 5. Toggle **हिं** in the header to switch to Hindi.
 6. `/staff` shows the lead list with scores.
 
+## Design
+
+The UI follows the Stitch project "Udyam Digital Business Onboarding" (design system "Bharat Merchant Utility"):
+Noto Sans, navy `#09244B`, saffron `#E65100`, emerald `#0D7A57`, Material Symbols icons (loaded from Google Fonts).
+Only screens the app has logic for are built: chat, plan card and builder, live plan, paperwork, verification results,
+order tracker, demo panels and the staff list.
+
 ## Folders
 
 ```
 app/      main.py (API)  rules.py  advisor.py  kyc.py  orders.py  data.py  i18n.py  scenarios.py
-static/   index.html  app.js  styles.css  staff.html
+static/   index.html  app.js  staff.html
+          styles.css (tokens, shell, chat)  cards.css (plan, builder, tracker)
+          kyc.css (paperwork)  harness.css (demo panels, live sheet)  staff.css
 data/     catalogue + registries + kyc_documents/ (sample)
 tests/    test_rules.py  test_advisor.py  test_kyc.py
 ```
