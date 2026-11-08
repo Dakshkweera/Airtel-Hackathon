@@ -5,3 +5,4 @@ __pycache__/
 data/sessions.json
 data/turn_log.jsonl
 data/sessions.json
+.playwright-mcp/

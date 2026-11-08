@@ -40,7 +40,7 @@ const UI = {
     spokenPlan: "{plan}: {price} rupees per month, {setup} rupees one-time setup, {months} month plan.", back: "Welcome back. I remember our chat.", micTip: "Talk instead of typing",
     needsT: "What do you need?", needsSub: "Tap to add or remove. The price updates instantly.", gnet: "Internet", gphone: "Phones", gsafe: "Safety and backup", ggrow: "Grow online", gteam: "Team tools",
     pendingGst: "needs GST, to confirm", waitFor: "Still to confirm", w_city: "your city", w_staff: "team size", w_gst: "GST", picked: "Your picks are in the plan.", lockedPre: "Not available: ",
-    listenFree: "Listening… just talk, I'll understand"
+    listenFree: "Listening… just talk, I'll understand", botName: "Sahayak AI", you: "You"
   },
   hi: {
     sub: "Accel Business · ऑनलाइन", ph: "संदेश लिखें…", steps: ["चैट", "प्लान", "कागज़ात", "ट्रैक"],
@@ -79,7 +79,7 @@ const UI = {
     spokenPlan: "{plan}: {price} रुपये प्रति माह, {setup} रुपये एक बार का सेटअप, {months} महीने का प्लान।", back: "वापसी पर स्वागत है। मुझे हमारी बातचीत याद है।", micTip: "टाइप करने की जगह बोलिए",
     needsT: "आपको क्या चाहिए?", needsSub: "जोड़ने या हटाने के लिए टैप करें। भाव तुरंत बदलता है।", gnet: "इंटरनेट", gphone: "फ़ोन", gsafe: "सुरक्षा और बैकअप", ggrow: "ऑनलाइन बढ़ें", gteam: "टीम के औज़ार",
     pendingGst: "GST चाहिए, पक्का करना है", waitFor: "अभी पक्का करना है", w_city: "आपका शहर", w_staff: "टीम का आकार", w_gst: "GST", picked: "आपकी पसंद प्लान में है।", lockedPre: "उपलब्ध नहीं: ",
-    listenFree: "सुन रहा हूँ… बस बोलिए, मैं समझ लूँगा"
+    listenFree: "सुन रहा हूँ… बस बोलिए, मैं समझ लूँगा", botName: "सहायक AI", you: "आप"
   }
 };
 const ICON = { P01: "🌐", P02: "🌐", P03: "🌐", P04: "📡", P05: "🔌", P06: "☎️", P07: "📱", P08: "📟", P09: "🔁", P10: "🔀", P11: "📞", P12: "🎥", P13: "📍", P14: "📶",
@@ -97,6 +97,8 @@ const inr = n => "₹" + Number(n).toLocaleString("en-IN");
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>");
 const now = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const ic = (name, cls = "") => `<span class="ms ${cls}" aria-hidden="true">${name}</span>`;
+const icEl = (name, cls = "") => h("span", { class: "ms " + cls, "aria-hidden": "true", text: name });
 
 function h(tag, props = {}, ...kids) {
   const el = document.createElement(tag);
@@ -124,18 +126,19 @@ function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.ad
 /* ------------------------------------------------------------------ chat */
 const chat = $("#chat");
 function scrollDown() { requestAnimationFrame(() => { chat.scrollTop = chat.scrollHeight; }); }
+function whoEl(who) { return h("div", { class: "who" }, h("span", { text: who === "user" ? ui().you : ui().botName }), h("time", { text: now() })); }
 function addBubble(text, who) {
-  const row = h("div", { class: "row " + who }, h("div", { class: "bubble" }, h("div", { html: fmt(text) }), h("time", { text: now() })));
+  const row = h("div", { class: "row " + who }, whoEl(who), h("div", { class: "bubble" }, h("div", { html: fmt(text) })));
   chat.append(row); scrollDown(); return row;
 }
-function addNotice(text) { chat.append(h("div", { class: "notice", text })); scrollDown(); }
+function addNotice(text, icon = "history") { chat.append(h("div", { class: "notice" }, icEl(icon, "xs"), text)); scrollDown(); }
 function typing() { const t = h("div", { class: "row bot" }, h("div", { class: "typing" }, h("span"), h("span"), h("span"))); chat.append(t); scrollDown(); return t; }
 function addCard(el) { const row = h("div", { class: "row bot" }, el); chat.append(row); scrollDown(); return el; }
 
 const reduced = () => matchMedia("(prefers-reduced-motion:reduce)").matches;
 async function streamBubble(text) {
   const body = h("div"), cur = h("span", { class: "stream-cur" });
-  const row = h("div", { class: "row bot" }, h("div", { class: "bubble" }, body, h("time", { text: now() })));
+  const row = h("div", { class: "row bot" }, whoEl("bot"), h("div", { class: "bubble" }, body));
   chat.append(row);
   if (document.hidden || reduced()) { body.innerHTML = fmt(text); scrollDown(); return row; }
   const parts = text.split(/(\s+)/), per = Math.max(9, Math.min(34, 1500 / Math.max(1, parts.length / 2)));
@@ -389,7 +392,7 @@ function applyLang(l, notice) {
   $("#lEn").setAttribute("aria-pressed", l === "en"); $("#lHi").setAttribute("aria-pressed", l === "hi");
   $("#subtitle").textContent = ui().sub; $("#msg").placeholder = ui().ph;
   renderStepper(); renderSides(); setChips(S.lastChips);
-  if (notice) addNotice(ui().lang);
+  if (notice) addNotice(ui().lang, "translate");
   if (K.open) renderKyc();
 }
 $("#lEn").onclick = () => setLang("en"); $("#lHi").onclick = () => setLang("hi");
@@ -754,7 +757,7 @@ async function restore() {
     if (d.lang !== S.lang) applyLang(d.lang, false);
     if (S.preview && S.preview.final) S.quote = S.preview.quote;
     d.history.forEach(m => addBubble(m.text, m.role === "user" ? "user" : "bot"));
-    addNotice("✨ " + ui().back);
+    addNotice(ui().back);
     renderStepper(); renderHood();
     await showBot(d.resume || [], true);
     return true;

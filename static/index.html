@@ -4,9 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Udyam Digital</title>
-<meta name="theme-color" content="#0b6e5c">
+<meta name="theme-color" content="#09244b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0&display=block">
 <link rel="stylesheet" href="/static/styles.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b6e5c'/%3E%3Ctext x='16' y='23' font-size='20' font-weight='800' text-anchor='middle' fill='white' font-family='Arial'%3EU%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2309244b'/%3E%3Ctext x='16' y='23' font-size='20' font-weight='800' text-anchor='middle' fill='white' font-family='Arial'%3EU%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -14,12 +18,12 @@
 
 <main class="phone" id="phone">
   <header class="top">
-    <div class="logo" aria-hidden="true">U</div>
+    <div class="logo" aria-hidden="true"><span class="ms fill">storefront</span></div>
     <div class="t"><b>Udyam Digital</b><small><span class="dot"></span><span id="subtitle">Accel Business · online</span></small></div>
     <div class="lang" role="group" aria-label="Language">
       <button id="lEn" aria-pressed="true">EN</button><button id="lHi" aria-pressed="false">हिं</button>
     </div>
-    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Demo tools">⋯</button>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Demo tools"><span class="ms">more_vert</span></button>
   </header>
   <nav class="stepper" id="stepper" aria-label="Progress"></nav>
 
@@ -29,27 +33,32 @@
   <div class="chips" id="chips"></div>
   <form class="composer" id="composer" autocomplete="off">
     <label class="sr" for="msg">Message</label>
-    <input id="msg" placeholder="Type a message…" enterkeyhint="send">
-    <button class="mic" id="micBtn" aria-label="Voice chat" aria-pressed="false" type="button" title="Voice chat">🎤</button>
-    <button class="send" id="sendBtn" aria-label="Send" type="submit">➤</button>
+    <div class="field-wrap"><span class="ms sm" aria-hidden="true">chat</span><input id="msg" placeholder="Type a message…" enterkeyhint="send"></div>
+    <button class="mic" id="micBtn" aria-label="Voice chat" aria-pressed="false" type="button" title="Voice chat"><span class="ms fill">mic</span></button>
+    <button class="send" id="sendBtn" aria-label="Send" type="submit"><span class="ms fill">send</span></button>
   </form>
 
   <!-- paperwork sheet -->
   <div class="sheet" id="kycSheet" role="dialog" aria-modal="true" aria-label="Paperwork">
-    <div class="sheet-h"><button class="icon-btn" id="kycClose" aria-label="Back to chat">←</button><b id="kycTitle">Paperwork</b></div>
+    <div class="sheet-h kyc-h">
+      <button class="icon-btn" id="kycClose" aria-label="Back to chat"><span class="ms">arrow_back</span></button>
+      <div class="kyc-t"><b id="kycTitle">Paperwork</b><small id="kycStep"></small></div>
+    </div>
+    <div class="kyc-prog" id="kycProg"><i></i><i></i><i></i></div>
     <div class="sheet-b" id="kycBody"></div>
     <div class="sheet-f" id="kycFoot"></div>
   </div>
 
   <!-- demo tools sheet (narrow screens) -->
   <div class="sheet menu-sheet" id="menuSheet" role="dialog" aria-modal="true" aria-label="Demo tools">
-    <div class="sheet-h"><button class="icon-btn" id="menuClose" aria-label="Close">←</button><b>Demo tools</b></div>
+    <div class="sheet-h"><button class="icon-btn" id="menuClose" aria-label="Close"><span class="ms">arrow_back</span></button><b>Demo tools</b></div>
     <div class="sheet-b" id="menuBody"></div>
   </div>
 
   <!-- live plan sheet (narrow screens) -->
-  <div class="sheet menu-sheet" id="liveSheet" role="dialog" aria-modal="true" aria-label="Your plan, live">
-    <div class="sheet-h"><button class="icon-btn" id="liveClose" aria-label="Close">←</button><b id="liveTitle">Your plan, live</b></div>
+  <div class="sheet menu-sheet bottom" id="liveSheet" role="dialog" aria-modal="true" aria-label="Your plan, live">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-h"><b><span class="live-dot"></span><span id="liveTitle">Your plan, live</span></b><button class="icon-btn" id="liveClose" aria-label="Close"><span class="ms">close</span></button></div>
     <div class="sheet-b" id="liveBody"></div>
   </div>
 
