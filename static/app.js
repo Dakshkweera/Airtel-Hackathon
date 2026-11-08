@@ -46,7 +46,7 @@ const UI = {
     needsSel: "{n} selected", add: "Add", tapToggle: "Tap to toggle", optional: "Optional", whatIn: "What's in this plan",
     stepOf: "Step {n} of 3", stepNames: ["Consent & privacy", "Numbers & documents", "Verification results"], passed: "Passed",
     kindPill: { pass: "Verified", fail: "Needs fix", review: "In review", warn: "Plan changed" }, auditT: "Check details", nChecks: "{n} checks run",
-    orderStatus: "Order status", inProgress: "In progress", liveNow: "Live", daysLeft: "{n} days remaining", dueToday: "Due today", nowTag: "Now", demoMode: "Prototype mode"
+    orderStatus: "Order status", inProgress: "In progress", liveNow: "Live", daysLeft: "{n} days remaining", dueToday: "Due today", nowTag: "Now", demoMode: "Prototype mode", nScn: "{n} cases"
   },
   hi: {
     sub: "Accel Business · ऑनलाइन", ph: "संदेश लिखें…", steps: ["चैट", "प्लान", "कागज़ात", "ट्रैक"],
@@ -91,7 +91,7 @@ const UI = {
     needsSel: "{n} चुने गए", add: "जोड़ें", tapToggle: "टैप करें", optional: "वैकल्पिक", whatIn: "इस प्लान में क्या है",
     stepOf: "चरण {n} / 3", stepNames: ["सहमति और निजता", "नंबर और दस्तावेज़", "जाँच के नतीजे"], passed: "पास",
     kindPill: { pass: "सत्यापित", fail: "ठीक करें", review: "रिव्यू में", warn: "प्लान बदला" }, auditT: "जाँच का ब्योरा", nChecks: "{n} जाँच हुईं",
-    orderStatus: "ऑर्डर की स्थिति", inProgress: "जारी है", liveNow: "चालू", daysLeft: "{n} दिन बाकी", dueToday: "आज", nowTag: "अभी", demoMode: "प्रोटोटाइप मोड"
+    orderStatus: "ऑर्डर की स्थिति", inProgress: "जारी है", liveNow: "चालू", daysLeft: "{n} दिन बाकी", dueToday: "आज", nowTag: "अभी", demoMode: "प्रोटोटाइप मोड", nScn: "{n} केस"
   }
 };
 /* Material Symbols names per catalogue product */
@@ -702,39 +702,47 @@ async function placeOrder() {
 /* ------------------------------------------------------------------ side panels + demo */
 function buildDemo(into) {
   const U = ui();
-  const wrap = h("div", { class: "panel" }, h("h3", { text: U.tryCase }), h("p", { text: U.tryCaseSub }));
-  S.scenarios.forEach(sc => wrap.append(h("button", { class: "scn", type: "button", onclick: () => { document.getElementById("menuSheet").classList.remove("open"); playScenario(sc); } },
+  const wrap = h("div", { class: "panel scn-panel" },
+    h("div", { class: "ph" }, h("h3", { text: U.tryCase }), h("span", { class: "pill gray", text: U.nScn.replace("{n}", S.scenarios.length) })),
+    h("p", { text: U.tryCaseSub }));
+  const list = h("div", { class: "scn-list" });
+  S.scenarios.forEach(sc => list.append(h("button", { class: "scn" + (S.activeScn === sc.id ? " on" : ""), type: "button", "data-scn": sc.id, onclick: () => { document.getElementById("menuSheet").classList.remove("open"); playScenario(sc); } },
     h("b", { text: sc.id }), h("div", {}, h("span", { text: sc.title }), h("small", { text: sc.expect })))));
-  const tools = h("div", { class: "panel" },
-    h("button", { class: "btn ghost sm", style: "width:100%", text: "↺ " + U.reset, onclick: () => { document.getElementById("menuSheet").classList.remove("open"); resetChat(); } }),
-    h("p", {}, h("a", { class: "link", href: "/staff", target: "_blank", text: U.staff })),
-    h("p", { class: "fine", style: "text-align:left", text: "📦 " + U.sampleNote + ": data/ (drop in the real case CSVs to replace)" }));
+  wrap.append(list);
+  const tools = h("div", { class: "panel tools" },
+    h("div", { class: "tool-btns" },
+      h("button", { class: "btn ghost sm", type: "button", html: ic("restart_alt", "sm") + esc(U.reset), onclick: () => { document.getElementById("menuSheet").classList.remove("open"); S.activeScn = null; markScn(); resetChat(); } }),
+      h("a", { class: "btn sm", href: "/staff", target: "_blank", html: esc(U.staff.replace(/\s*↗$/, "")) + ic("open_in_new", "sm") })),
+    h("p", { class: "fine", html: ic("dataset", "xs") + esc(U.sampleNote + ": data/ (drop in the real case CSVs to replace)") }));
   into.append(wrap, tools);
 }
+function markScn() { document.querySelectorAll(".scn").forEach(b => b.classList.toggle("on", b.dataset.scn == S.activeScn)); }
 function livePanelEl() {
   const U = ui(), p = S.preview, el = h("div", { class: "panel live" });
-  el.append(h("h3", { text: U.liveT }));
-  if (!p || !p.quote || (!p.quote.items.length && !p.quote.refused.length)) { el.append(h("div", { class: "empty", text: U.noPlanYet })); return el; }
+  const head = h("div", { class: "ph" }, h("h3", { text: U.liveT }));
+  el.append(head);
+  if (!p || !p.quote || (!p.quote.items.length && !p.quote.refused.length)) { el.append(h("div", { class: "empty", html: ic("forum") + `<span>${esc(U.noPlanYet)}</span>` })); return el; }
   const q = p.quote, T = q.totals;
-  el.append(h("span", { class: "est " + (p.final ? "final" : ""), text: p.final ? U.confirmed : U.estimate }), h("h3", { class: "pn", text: q.plan_name }));
-  const big = h("div", { class: "lbig" }, inr(T.monthly), h("small", { text: " /" + U.month }));
-  el.append(big);
-  el.append(h("div", { class: "lsub", text: `${inr(T.setup)} ${U.setup} · ${U.months.replace("{n}", T.contract_months)}` + (T.expected_days > 0 ? " · " + U.live.replace("{n}", T.expected_days) : "") }));
+  head.append(h("span", { class: "pill " + (p.final ? "green" : "saffron"), html: ic(p.final ? "verified" : "bolt", "xs") + esc(p.final ? U.confirmed : U.estimate) }));
+  const big = h("div", { class: "lbig num" }, inr(T.monthly), h("small", { text: " /" + U.month }));
+  const box = h("div", { class: "lbox" }, h("div", { class: "ltop" }, h("b", { class: "pn", text: q.plan_name }), big),
+    h("div", { class: "lsub", text: `${inr(T.setup)} ${U.setup} · ${U.months.replace("{n}", T.contract_months)}` + (T.expected_days > 0 ? " · " + U.live.replace("{n}", T.expected_days) : "") }));
   const prev = S.prevLive || {}, now2 = {};
   q.items.forEach(i => {
     now2[i.id] = i.qty;
     const cls = !(i.id in prev) && Object.keys(prev).length ? "new" : (i.id in prev && prev[i.id] !== i.qty ? "chg" : "");
-    el.append(h("div", { class: "li " + cls }, h("span", { text: ICON[i.id] || "📦" }), h("span", { class: "n", text: i.name + (i.qty > 1 ? " ×" + i.qty : "") }), h("span", { class: "p", text: inr(i.monthly) })));
+    box.append(h("div", { class: "li " + cls }, icEl(ICON[i.id] || "inventory_2", "sm"), h("span", { class: "ln", text: i.name + (i.qty > 1 ? " ×" + i.qty : "") }), h("span", { class: "p num", text: inr(i.monthly) })));
   });
+  el.append(box);
   S.prevLive = now2;
   if (S.liveMonthly !== null && S.liveMonthly !== T.monthly) { const from = S.liveMonthly; big.firstChild.textContent = inr(from); countUp(big, from, T.monthly); }
   S.liveMonthly = T.monthly;
   if (!p.final && p.pending && p.pending.length) {
-    el.append(h("div", { class: "assume", text: U.waitFor + ": " + p.pending.map(k => U["w_" + k]).join(" · ") + "." }));
+    el.append(h("div", { class: "assume", html: ic("hourglass_top", "xs") + `<span>${esc(U.waitFor + ": " + p.pending.map(k => U["w_" + k]).join(" · ") + ".")}</span>` }));
   }
   if (!p.final && p.assumed && p.assumed.length) {
     const v = p.values || {}, map = { staff: U.staffW.replace("{n}", v.staff), sites: U.sitesW.replace("{n}", v.sites), city: U.tierW.replace("{n}", v.tier), gst: U.noGstW };
-    el.append(h("div", { class: "assume", text: U.assumeLead + ": " + p.assumed.map(k => map[k]).join(" · ") + ". " + U.assumeFoot }));
+    el.append(h("div", { class: "assume", html: ic("info", "xs") + `<span>${esc(U.assumeLead + ": " + p.assumed.map(k => map[k]).join(" · ") + ". " + U.assumeFoot)}</span>` }));
   }
   return el;
 }
@@ -742,7 +750,7 @@ function renderPill() {
   const U = ui(), p = S.preview, pill = $("#livePill");
   if (!p || !p.quote || !p.quote.items.length) { pill.hidden = true; return; }
   pill.hidden = false;
-  pill.innerHTML = `<span>📋 ${esc(p.quote.plan_name)}${p.final ? "" : " · " + esc(U.estimate)}</span><span>${inr(p.quote.totals.monthly)}/${esc(U.month)} ▸</span>`;
+  pill.innerHTML = `<span>${ic("receipt_long", "sm")}${esc(p.quote.plan_name)}${p.final ? "" : " · " + esc(U.estimate)}</span><span class="num">${inr(p.quote.totals.monthly)}/${esc(U.month)}${ic("expand_less", "sm")}</span>`;
   if ($("#liveSheet").classList.contains("open")) { const lb = $("#liveBody"); lb.innerHTML = ""; lb.append(livePanelEl()); }
 }
 $("#livePill").onclick = () => { $("#liveTitle").textContent = ui().liveT; const lb = $("#liveBody"); lb.innerHTML = ""; lb.append(livePanelEl()); $("#liveSheet").classList.add("open"); };
@@ -752,12 +760,12 @@ function renderHood() {
   const U = ui(), R = $("#sideR"); R.innerHTML = "";
   R.append(livePanelEl()); renderPill();
   const prof = Object.entries(S.profile || {}).filter(([k, v]) => v !== false && v !== null && k !== "spend_skipped");
-  const hood = h("div", { class: "panel" }, h("h3", { text: U.hood }), h("p", { text: U.hoodSub }),
-    h("span", { class: "llm-badge " + (S.health.llm ? "on" : ""), text: S.health.llm ? U.llmOn : U.llmOff }));
-  if (!S.trace.length) hood.append(h("p", { text: U.noTrace }));
-  S.trace.forEach(t => hood.append(h("div", { class: "trace-item" }, h("code", { text: t.tool }), h("div", { text: [t.args, t.result].filter(Boolean).join("  →  ") }))));
+  const hood = h("div", { class: "panel hood" }, h("div", { class: "ph" }, h("h3", { text: U.hood })), h("p", { text: U.hoodSub }),
+    h("div", { class: "llm-badge " + (S.health.llm ? "on" : ""), html: `<i></i>${esc(S.health.llm ? U.llmOn : U.llmOff)}` }));
+  if (!S.trace.length) hood.append(h("p", { class: "muted", text: U.noTrace }));
+  S.trace.forEach(t => hood.append(h("div", { class: "trace-item" }, h("div", { class: "th", html: ic("terminal", "xs") + `<code>${esc(t.tool)}</code>` }), h("pre", { text: [t.args, t.result].filter(Boolean).join("\n→ ") }))));
   R.append(hood);
-  if (prof.length) R.append(h("div", { class: "panel" }, h("h3", { text: U.know }), h("div", { style: "display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" }, prof.map(([k, v]) => h("span", { class: "pill", style: "margin:0", text: `${k.replace("_", " ")}: ${v}` })))));
+  if (prof.length) R.append(h("div", { class: "panel" }, h("div", { class: "ph" }, h("h3", { text: U.know })), h("div", { class: "know" }, prof.map(([k, v]) => h("span", { class: "pill gray", text: `${k.replace("_", " ")}: ${v}` })))));
 }
 function renderSides() { const L = $("#sideL"); L.innerHTML = ""; buildDemo(L); const M = $("#menuBody"); M.innerHTML = ""; buildDemo(M); renderHood(); }
 $("#menuBtn").onclick = () => $("#menuSheet").classList.add("open");
@@ -777,6 +785,7 @@ async function resetChat(opts = {}) {
 }
 async function playScenario(sc) {
   if (S.busy) return;
+  S.activeScn = sc.id; markScn();
   await resetChat({ fast: true });
   for (const m of sc.messages) { await say(m, m); await sleep(500); }
 }
