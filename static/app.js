@@ -12,7 +12,7 @@ const UI = {
     more: "{x}/month more than the {y} you pay today", same: "Same as the {y} you pay today", added: "added: needed to work", locked: "🔒",
     people: "People who work with you", peopleSub: "Including you", branches: "Shops or branches", branchesSub: "How many places?",
     go: "Continue", youSaid: "{a} staff · {b} branch(es)", dMenu: "Demo tools", handTitle: "Sales team will follow up",
-    handSub: "They get this whole chat, so you won't repeat anything.", orderId: "Order", expected: "Expected live by", advance: "Demo: simulate next step",
+    handSub: "They get this whole chat, so you won't repeat anything.", orderId: "Order", expected: "Expected live by", advance: "Simulate next step",
     done: "All done. Your service is live! 🎉", reset: "Start over", tryCase: "Try a test case", tryCaseSub: "Each plays the PRD's test conversation.",
     staff: "Open staff view ↗", hood: "Under the hood", hoodSub: "What the code decided on each turn. The AI only talks; prices, eligibility and every “no” come from the rules engine.",
     know: "What the advisor knows", llmOn: "LLM: on (OpenRouter)", llmOff: "LLM: off, keyword advisor", noTrace: "Nothing yet. Say hello!",
@@ -45,7 +45,8 @@ const UI = {
     sameT: "Same as today", sameSub: "Matches the {y} you pay today", superseded: "Superseded", bestFit: "Best fit for you",
     needsSel: "{n} selected", add: "Add", tapToggle: "Tap to toggle", optional: "Optional", whatIn: "What's in this plan",
     stepOf: "Step {n} of 3", stepNames: ["Consent & privacy", "Numbers & documents", "Verification results"], passed: "Passed",
-    kindPill: { pass: "Verified", fail: "Needs fix", review: "In review", warn: "Plan changed" }, auditT: "Check details", nChecks: "{n} checks run"
+    kindPill: { pass: "Verified", fail: "Needs fix", review: "In review", warn: "Plan changed" }, auditT: "Check details", nChecks: "{n} checks run",
+    orderStatus: "Order status", inProgress: "In progress", liveNow: "Live", daysLeft: "{n} days remaining", dueToday: "Due today", nowTag: "Now", demoMode: "Prototype mode"
   },
   hi: {
     sub: "Accel Business · ऑनलाइन", ph: "संदेश लिखें…", steps: ["चैट", "प्लान", "कागज़ात", "ट्रैक"],
@@ -56,7 +57,7 @@ const UI = {
     added: "जोड़ा गया: चलने के लिए ज़रूरी", locked: "🔒",
     people: "आपके साथ काम करने वाले", peopleSub: "आप समेत", branches: "दुकानें या शाखाएँ", branchesSub: "कितनी जगह?",
     go: "आगे बढ़ें", youSaid: "{a} कर्मचारी · {b} शाखा", dMenu: "डेमो टूल", handTitle: "सेल्स टीम संपर्क करेगी",
-    handSub: "उन्हें पूरी चैट मिलती है, आपको कुछ दोहराना नहीं पड़ेगा।", orderId: "ऑर्डर", expected: "चालू होने की उम्मीद", advance: "डेमो: अगला कदम",
+    handSub: "उन्हें पूरी चैट मिलती है, आपको कुछ दोहराना नहीं पड़ेगा।", orderId: "ऑर्डर", expected: "चालू होने की उम्मीद", advance: "अगला कदम दिखाएँ",
     done: "सब हो गया। आपकी सर्विस चालू है! 🎉", reset: "फिर से शुरू करें", tryCase: "टेस्ट केस आज़माएँ", tryCaseSub: "हर एक PRD की टेस्ट बातचीत चलाता है।",
     staff: "स्टाफ व्यू खोलें ↗", hood: "पर्दे के पीछे", hoodSub: "हर बार कोड ने क्या तय किया। AI सिर्फ़ बात करता है; भाव, पात्रता और हर “ना” नियम इंजन से आती है।",
     know: "सहायक को क्या पता है", llmOn: "LLM: चालू (OpenRouter)", llmOff: "LLM: बंद, कीवर्ड सहायक", noTrace: "अभी कुछ नहीं। नमस्ते कहें!",
@@ -89,7 +90,8 @@ const UI = {
     sameT: "आज के बराबर", sameSub: "आज के {y} जितना", superseded: "पुराना", bestFit: "आपके लिए सबसे सही",
     needsSel: "{n} चुने गए", add: "जोड़ें", tapToggle: "टैप करें", optional: "वैकल्पिक", whatIn: "इस प्लान में क्या है",
     stepOf: "चरण {n} / 3", stepNames: ["सहमति और निजता", "नंबर और दस्तावेज़", "जाँच के नतीजे"], passed: "पास",
-    kindPill: { pass: "सत्यापित", fail: "ठीक करें", review: "रिव्यू में", warn: "प्लान बदला" }, auditT: "जाँच का ब्योरा", nChecks: "{n} जाँच हुईं"
+    kindPill: { pass: "सत्यापित", fail: "ठीक करें", review: "रिव्यू में", warn: "प्लान बदला" }, auditT: "जाँच का ब्योरा", nChecks: "{n} जाँच हुईं",
+    orderStatus: "ऑर्डर की स्थिति", inProgress: "जारी है", liveNow: "चालू", daysLeft: "{n} दिन बाकी", dueToday: "आज", nowTag: "अभी", demoMode: "प्रोटोटाइप मोड"
   }
 };
 /* Material Symbols names per catalogue product */
@@ -380,18 +382,23 @@ function trackerCard(o) {
   });
   return el;
 }
+const STAGE_ICON = ["fact_check", "payments", "engineering", "router", "wifi"];
 function paintTracker(el, o) {
   const U = ui();
   const d = new Date(o.expected_date + "T00:00");
   const ds = d.toLocaleDateString(S.lang === "hi" ? "hi-IN" : "en-IN", { weekday: "short", day: "numeric", month: "short" });
+  const left = Math.max(0, Math.round((d - new Date(new Date().toDateString())) / 864e5));
   const lis = o.stages.map((s, i) => {
     const hist = o.history.find(x => x.stage === i);
     const cls = i < o.stage || (o.done && i === o.stage) ? "done" : i === o.stage ? "now" : "todo";
-    return `<li class="${cls}"><span class="c">${cls === "done" ? "✓" : ""}</span><b>${esc(s)}</b>${hist ? `<small>${esc(hist.at)}</small>` : ""}</li>`;
+    const icon = cls === "done" ? "check" : STAGE_ICON[i] || "radio_button_unchecked";
+    return `<li class="${cls}"><span class="c">${ic(icon, cls === "done" ? "sm" : "sm")}</span><div><b>${esc(s)}${cls === "now" ? ` <span class="pill saffron">${esc(U.nowTag)}</span>` : ""}</b>${hist ? `<small>${esc(hist.at)}</small>` : ""}</div></li>`;
   }).join("");
-  el.innerHTML = `<div class="orderid"><span>${esc(U.orderId)} <code>${esc(o.id)}</code></span><span class="pill">${esc(o.plan)}</span></div>
-    <div class="exp"><small>${esc(U.expected)}</small><b>${esc(o.done ? "🎉 " + U.done : ds)}</b></div><ul class="tl">${lis}</ul>
-    ${o.done ? "" : `<div class="cta"><button class="btn ghost sm" data-adv>${esc(U.advance)}</button></div>`}`;
+  el.innerHTML = `<div class="orderid"><span class="lbl">${esc(U.orderStatus)}</span><code>#${esc(o.id)}</code><span class="pill ${o.done ? "green" : "saffron"}">${esc(o.done ? U.liveNow : U.inProgress)}</span></div>
+    <div class="ot"><h3>${esc(o.plan)}</h3>${o.monthly != null ? `<span class="op">${inr(o.monthly)}<small>/${esc(U.month)}</small></span>` : ""}</div>
+    <div class="exp"><div><small>${esc(U.expected)}</small><b>${esc(o.done ? U.done : ds)}</b>${o.done ? "" : `<span class="left"><i></i>${esc(left ? U.daysLeft.replace("{n}", left) : U.dueToday)}</span>`}</div><span class="ico">${ic(o.done ? "celebration" : "speed")}</span></div>
+    <ul class="tl">${lis}</ul>
+    ${o.done ? "" : `<div class="tfoot"><span>${esc(U.demoMode)}</span><button class="btn soft sm" data-adv>${ic("refresh", "sm")}${esc(U.advance)}</button></div>`}`;
 }
 
 /* ------------------------------------------------------------------ language */

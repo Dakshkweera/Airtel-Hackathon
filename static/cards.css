@@ -138,3 +138,34 @@
 /* ---------- handoff card ---------- */
 .handoff{padding:16px;display:flex;gap:12px;align-items:flex-start}
 .handoff b{font-size:16px;color:var(--primary)}.handoff p{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
+
+/* ---------- order tracker. Stitch: "Order Tracker Card & Chat Status" ---------- */
+.tracker{padding:16px}
+.orderid{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.orderid .lbl{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.orderid code{font-family:var(--mono);font-weight:700;font-size:12px;background:var(--surf-high);color:var(--primary);padding:3px 8px;border-radius:6px}
+.orderid .pill{margin-left:auto}
+.ot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:10px 0 12px}
+.ot h3{margin:0;font-size:22px;line-height:28px;color:var(--primary);font-weight:800}
+.op{font-weight:800;font-size:18px;color:var(--saffron-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.op small{font-size:13px;color:var(--ink-2);font-weight:600}
+.exp{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surf-low);border-radius:var(--r);padding:14px}
+.exp small{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.exp b{display:block;font-size:28px;line-height:36px;color:var(--primary);font-weight:800}
+.exp .left{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2);font-weight:600}
+.exp .left i{width:8px;height:8px;border-radius:50%;background:var(--saffron)}
+.exp .ico{width:48px;height:48px}
+.tl{list-style:none;margin:16px 0 4px;padding:0}
+.tl li{position:relative;display:flex;gap:14px;padding:0 0 20px;min-height:36px}
+.tl li:last-child{padding-bottom:4px}
+.tl li::before{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl li.done::before{background:var(--primary)}
+.tl .c{width:32px;height:32px;border-radius:50%;background:var(--surf-high);color:var(--ink-3);display:grid;place-items:center;flex:none;position:relative;z-index:1;transition:.3s}
+.tl li.done .c{background:var(--primary);color:#fff}
+.tl li.now .c{background:var(--saffron);color:#fff;animation:pulse 1.6s infinite;box-shadow:0 0 0 0 rgba(230,81,0,.5)}
+.tl b{font-size:16px;line-height:22px;color:var(--primary);display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:4px}
+.tl small{display:block;color:var(--ink-2);font-size:13px;margin-top:2px}
+.tl li.todo b{color:var(--ink-3);font-weight:600}
+.tfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:8px}
+.tfoot span{font-size:13px;font-weight:700;color:var(--ink-2)}
