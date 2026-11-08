@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://udyam-digital-accel.onrender.com/api/:path*" },
+    { "source": "/sample-docs/:path*", "destination": "https://udyam-digital-accel.onrender.com/sample-docs/:path*" },
+    { "source": "/static/:path*", "destination": "/:path*" }
+  ]
+}

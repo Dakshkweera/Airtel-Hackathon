@@ -1,7 +1,7 @@
 # Render blueprint: the FastAPI app (API + frontend). Vercel proxies /api and /sample-docs here.
 services:
   - type: web
-    name: udyam-digital-api
+    name: udyam-digital-accel
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
