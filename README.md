@@ -57,6 +57,16 @@ Multi-Store ₹5,195 per site, Factory Connect ₹16,025).
   internet required. If it is unreachable the browser's own best voice is used. The mic keeps listening through silence and pauses,
   sends after about 1.7 s of quiet, and only stops when you tap Stop.
 
+## Catching bad answers without anyone reporting them
+
+- `python scripts/eval_conversations.py` plays ~74 messy, realistic owner messages (mumbled voice transcripts, Hinglish, Hindi, Marathi,
+  Tamil, vague, off-topic, angry, objections, corrections) against the real model, in parallel (about a minute). It flags any turn where
+  the AI did not answer, a rupee amount did not come from a tool, the reply was in the wrong script, the paperwork did not open when
+  asked, a reply was slow, or a second AI judge says the question was not answered. Report: `scripts/eval_report.json`.
+- The running app logs every owner message to `data/turn_log.jsonl`. `GET /api/debug/turns?only_problems=true` shows the turns where the
+  AI did not answer and the keyword fallback did.
+- Chat models that "think" (like Claude Haiku 5.5) are called with thinking off: it used the whole token budget and left empty replies.
+
 ## Try it in 3 minutes
 
 1. Left panel, test case **2**: the clinic gets ₹3,742. Switch **Cloud Backup** on: ₹4,241.

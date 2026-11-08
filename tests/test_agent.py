@@ -220,8 +220,10 @@ def test_agent_failure_falls_back_to_the_keyword_advisor(monkeypatch):
     monkeypatch.setattr(llm_agent, "_http_chat", boom)
     sid = start()
     r = chat(sid, "clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees")
+    assert "say that once more" in text_of(r)                                          # first miss: asks to repeat
+    r = chat(sid, "clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees")
     card = next(c for m in r["messages"] for c in m.get("cards", []) if c["type"] == "plan")
-    assert card["quote"]["totals"]["monthly"] == 3742                                   # still works
+    assert card["quote"]["totals"]["monthly"] == 3742                                   # keeps failing: keyword advisor takes over
 
 
 def test_agent_custom_products_and_handoff(monkeypatch):
@@ -444,3 +446,88 @@ def test_agent_always_offers_the_open_paperwork_button_during_kyc(monkeypatch):
     scripted(monkeypatch, [{"content": "Sure, tell me about the documents."}])
     r = chat(sid, "tell me about aadhaar privacy")           # no upload words: goes to the model
     assert any(c.get("action") == "start_kyc" for m in r["messages"] for c in m.get("chips", []))
+
+
+def test_empty_model_reply_is_retried_not_dropped(monkeypatch):
+    seen = []
+    scripted(monkeypatch, [{"content": ""}, {"content": "Each item in your plan has a job: internet, backup, cameras and mobile lines."}], seen)
+    sid = start()
+    r = chat(sid, "what are these features and are they necessary")
+    assert r["messages"][0]["text"].startswith("Each item")
+    assert any("last reply was empty" in m["content"] for m in seen[1] if m["role"] == "system")
+
+
+def test_repeated_failure_asks_once_then_keyword_flow_continues(monkeypatch):
+    scripted(monkeypatch, [{"content": ""}] * 6)
+    sid = start()
+    r1 = chat(sid, "something unclear")
+    assert "say that once more" in text_of(r1)
+    r2 = chat(sid, "something unclear again")
+    assert "say that once more" not in text_of(r2)                                     # does not loop forever
+
+
+# ------------------------------------------------------------------ found by the conversation check against the real model
+def test_clear_go_ahead_with_the_plan_on_screen_opens_paperwork_without_the_model(monkeypatch):
+    sid = start()
+    chat(sid, CLINIC_MSG := "Clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setattr(llm_agent, "_http_chat", lambda m, t: (_ for _ in ()).throw(AssertionError("model should not be needed")))
+    for said in ("theek hai aage badho", "ok let's go", "आगे बढ़ो"):
+        sid = start()
+        monkeypatch.delenv("OPENROUTER_API_KEY")
+        chat(sid, CLINIC_MSG)
+        monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+        r = chat(sid, said)
+        assert any(c["type"] == "open_kyc" for m in r["messages"] for c in m.get("cards", [])), said
+
+
+def test_go_ahead_is_not_triggered_without_the_continue_button_on_screen():
+    sid = start()
+    chat(sid, "I run a clinic")                                      # no plan yet, no continue button
+    r = chat(sid, "ok")
+    assert not any(c["type"] == "open_kyc" for m in r["messages"] for c in m.get("cards", []))
+
+
+def test_removing_items_from_a_shown_plan_starts_from_that_plan(monkeypatch):
+    sid = start()
+    chat(sid, "Clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees")
+    scripted(monkeypatch, [{"content": "", "tool_calls": [call(1, "set_products", ops=[{"id": "P09", "qty": 0}, {"id": "P20", "qty": 0}])]},
+                           {"content": "Done, backup and security removed."}])
+    r = chat(sid, "remove the backup and the security")
+    ids = {i["id"] for i in r["preview"]["quote"]["items"]}
+    assert "P09" not in ids and "P20" not in ids and {"P02", "P07", "P16"} <= ids          # everything else is still there
+    assert r["preview"]["quote"]["totals"]["monthly"] == 3742 - 499 - 432
+    assert any(c["type"] == "plan" for m in r["messages"] for c in m.get("cards", []))
+
+
+def test_agent_is_told_the_script_of_the_owners_last_message(monkeypatch):
+    seen = []
+    scripted(monkeypatch, [{"content": "ok"}], seen)
+    sid = start()
+    chat(sid, "என் கடைக்கு இணையம் வேண்டும்")
+    blob = json.dumps([m["content"] for m in seen[0] if m["role"] == "system"], ensure_ascii=False)
+    assert "Tamil script" in blob and "set_language(ta)" in blob
+
+
+def test_where_documents_answer_lists_the_four_documents():
+    sid = start()
+    chat(sid, "shop in Haldwani, 20 staff, 3 branches, no GST, skip")
+    chat(sid, payload={"action": "start_kyc"})
+    t = text_of(chat(sid, "what documents do you need from me"))
+    for d in ("GST certificate", "Udyam certificate", "ID", "address proof"):
+        assert d in t
+
+
+def test_model_runs_with_thinking_off_and_room_to_answer(monkeypatch):
+    """Regression: model thinking used the whole token budget and the reply came back empty."""
+    import urllib.request
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    sent = {}
+
+    class R:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def read(self): return b'{"choices":[{"message":{"content":"hi"}}]}'
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=0: (sent.update(json.loads(req.data)), R())[1])
+    llm_agent._http_chat([{"role": "user", "content": "x"}], [])
+    assert sent["reasoning"] == {"enabled": False} and sent["max_tokens"] >= 800

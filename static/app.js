@@ -555,13 +555,19 @@ async function pdfToImage(file) {              // first page of the PDF becomes 
   const pdf = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
   const page = await pdf.getPage(1), vp = page.getViewport({ scale: 2 });
   const cv = document.createElement("canvas"); cv.width = vp.width; cv.height = vp.height;
-  await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+  const raf = window.requestAnimationFrame;   // PDF.js draws on animation frames, which never fire in a hidden tab
+  window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 0);
+  try { await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise; }
+  finally { window.requestAnimationFrame = raf; }
   const blob = await new Promise(r => cv.toBlob(r, "image/png"));
   return new File([blob], file.name.replace(/\.pdf$/i, "") + ".png", { type: "image/png" });
 }
 async function uploadDoc(dt, file, sample) {
   if (file && (file.type === "application/pdf" || /\.pdf$/i.test(file.name))) {
-    try { toast("📎 …"); file = await pdfToImage(file); } catch (e) { toast(ui().pdfFail); return; }
+    try {
+      toast("📎 …");
+      file = await Promise.race([pdfToImage(file), new Promise((_, rej) => setTimeout(() => rej(new Error("slow")), 25000))]);
+    } catch (e) { toast(ui().pdfFail); return; }
   }
   const el = $("#slot-" + dt); const bar = el && $(".bar", el);
   if (file) K.thumbs[dt] = URL.createObjectURL(file); else if (sample) K.thumbs[dt] = "/sample-docs/" + sample;

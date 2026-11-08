@@ -1,0 +1,739 @@
+[
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "bhai mera clinic hai Indore me 6 staff hain GST bhi hai",
+  "reply": "आपके क्लिनिक के लिए **क्लिनिक और ऑफिस प्रो** प्लान बना है: ₹3,742 प्रति महीना, सेटअप ₹1,500, 12 महीने का कॉन्ट्रैक्ट, 5 दिन में चालू। इसमें 300 Mbps फाइबर, बैकअप इंटरनेट, 2 बिज़नेस मोबाइल लाइनें, 6 प्रोफेशनल ईमेल और सिक्योरिटी शामिल हैं। आज आप मासिक इंटरनेट और",
+  "cards": [
+   "plan"
+  ],
+  "ms": 4766,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "abhi hum 2000 rupaye dete hain internet aur phone ka",
+  "reply": "Samajh gaya, aap abhi ₹2,000 dete hain. Plan ₹3,742 ka hai, jisme 300 Mbps fiber, backup internet, 2 business mobile lines, 6 email IDs aur security shamil hain. Ek baat batayein: aapke clinic mein kitni branches hain, sirf ek ya zyada?",
+  "cards": [],
+  "ms": 4196,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "ye to bahut mehnga hai yaar",
+  "reply": "एक छोटा विकल्प है: **₹2,610 प्रति महीना**, सेटअप ₹1,000, 12 महीने का कॉन्ट्रैक्ट, 5 दिन में चालू। इसमें 100 Mbps फाइबर, बैकअप इंटरनेट, 2 बिज़नेस मोबाइल और 6 प्रोफेशनल ईमेल शामिल हैं। यह आपके ₹2,000 से ₹610 ज़्यादा है। क्या आपके क्लिनिक में मुख्य रूप से ईमेल और",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3962,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "isme kya kya hai samjhao",
+  "reply": "इस छोटे प्लान में ये चीज़ें हैं:\n- **Biz Fibre 100**: रोज़ के बिलिंग और ब्राउज़िंग के लिए फाइबर इंटरनेट (₹799)\n- **Backup 4G/5G**: मुख्य लाइन बंद हो तो बैकअप इंटरनेट (₹499)\n- **2 Business Postpaid लाइनें**: बिलिंग और UPI के लिए मोबाइल (₹598)\n- **6 Cloud Email ",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3854,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "backup internet ki zarurat hai kya",
+  "reply": "जी हाँ, अगर फाइबर लाइन कभी बंद हो जाए तो बैकअप 4G/5G अपने-आप चालू हो जाता है, ताकि बिलिंग, UPI और मरीज़ों का रिकॉर्ड चलता रहे। क्लिनिक में यह ज़्यादातर काम आता है। क्या आप ये छोटा प्लान आगे बढ़ाना चाहेंगे, या पहले ₹3,742 वाले प्लान की पूरी तुलना देखें?",
+  "cards": [],
+  "ms": 2204,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "clinic hinglish full flow",
+  "user": "theek hai aage badho",
+  "reply": "बहुत बढ़िया! अब कागज़ी कार्रवाई। कुछ ही मिनट लगेंगे और सिर्फ़ 4 दस्तावेज़ चाहिए।",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 4,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "garbled voice, big shop (real session)",
+  "user": "shop in Haldwani, 20 staff, 3 branches, no GST, skip",
+  "reply": "Since you have 3 branches, I've also passed your details to our sales team, but you can continue online anytime.\n\nRecommended for your 3 Haldwani shops: **Multi-Store Connect**, ₹10,185/month, ₹10,800 setup, 12-month contract, live in about 3 days. It includes",
+  "cards": [
+   "plan",
+   "handoff"
+  ],
+  "ms": 4012,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "garbled voice, big shop (real session)",
+  "user": "send me about word this planet and what I am getting in what's the use of that feature",
+  "reply": "Here's what you get, per unit:\n\n- **Biz 5G AirFiber 100** (₹999/month, ×3 shops): plug-and-play internet, live in about 2 days, no digging.\n- **Backup 4G/5G Failover** (₹499/month, ×3): backup internet that takes over if the main line drops, so work doesn't st",
+  "cards": [],
+  "ms": 3377,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "garbled voice, big shop (real session)",
+  "user": "no tell me about my plan which I have all the features in it and is it what these features are an is it necessary",
+  "reply": "Your plan has four parts, and all are useful for a 3-shop setup:\n\n- **5G internet** keeps your billing and card machines online.\n- **Backup internet** keeps you working if the main line drops.\n- **Cloud CCTV** lets you check any shop from your phone.\n- **Busin",
+  "cards": [],
+  "ms": 2183,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "garbled voice, big shop (real session)",
+  "user": "Can we continue right here, like what's the problem in continuing",
+  "reply": "The paperwork step is open now. On each document row, tap the \"📷 Photo\" or \"📎 PDF / file\" button to upload. Let me know if you get stuck.",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 2666,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "garbled voice, big shop (real session)",
+  "user": "let me give you paper",
+  "reply": "You need 4 documents: GST certificate, Udyam certificate, your ID, and an address proof (a bill from the last 3 months). I've opened the paperwork screen: on each row tap “📷 Photo” or “📎 PDF / file”. No documents handy? Open “Try a sample applicant” at the top",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 6,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hindi devanagari",
+  "user": "मेरा क्लिनिक इंदौर में है, 6 स्टाफ, GST है",
+  "reply": "इंदौर में आपके क्लिनिक के लिए \"क्लिनिक और ऑफिस प्रो\" प्लान सुझाया गया है: लगभग ₹3,742 प्रति माह, सेटअप ₹1,500, 12 महीने का कॉन्ट्रैक्ट, 5 दिन में चालू। इसमें 300 Mbps फाइबर, बैकअप इंटरनेट, बिज़नेस मोबाइल लाइनें, ईमेल और सुरक्षा शामिल हैं। आप अभी आज कितना महीने",
+  "cards": [
+   "plan"
+  ],
+  "ms": 4410,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hindi devanagari",
+  "user": "इसमें क्या क्या मिलेगा",
+  "reply": "आपके प्लान में ये चीज़ें हैं:\n- 300 Mbps फाइबर इंटरनेट (₹1,499/माह)\n- बैकअप 4G/5G इंटरनेट, मुख्य लाइन बंद हो तो चालू (₹499/माह)\n- 2 बिज़नेस मोबाइल लाइनें (₹598/माह)\n- 6 लोगों के लिए प्रोफेशनल ईमेल (₹714/माह)\n- सुरक्षा, कंप्यूटरों के लिए (₹432/माह)\n\nआपके क्लिनि",
+  "cards": [],
+  "ms": 3474,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hindi devanagari",
+  "user": "ये सब ज़रूरी है क्या",
+  "reply": "मुख्य चीज़ें फाइबर और बैकअप इंटरनेट हैं, क्योंकि इनसे क्लिनिक का काम और बिलिंग चलती रहती है। बाकी चीज़ें, जैसे ईमेल और सुरक्षा, आप चाहें तो हटा सकते हैं। अगर कीमत ज़्यादा लग रही है तो मैं कम खर्च वाला विकल्प दिखा सकता हूँ। क्या आप उसे देखना चाहेंगे?",
+  "cards": [],
+  "ms": 2032,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hindi devanagari",
+  "user": "कितना खर्च आएगा हर महीने",
+  "reply": "मौजूदा प्लान का कुल खर्च हर महीने ₹3,742 है। अगर आप कम खर्च वाला विकल्प देखना चाहें, तो मैं वह भी दिखा सकता हूँ।",
+  "cards": [],
+  "ms": 1511,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hindi devanagari",
+  "user": "ठीक है शुरू करो",
+  "reply": "बहुत बढ़िया! अब कागज़ी कार्रवाई। कुछ ही मिनट लगेंगे और सिर्फ़ 4 दस्तावेज़ चाहिए।",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 6,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "Clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees",
+  "reply": "Here's a plan for your clinic in Mumbai: **Clinic & Office Pro**, ₹3,742/month, ₹1,500 setup, 12-month contract, live in about 5 days. It includes fibre internet (300 Mbps), backup internet, two business mobile lines, email for all 6 staff, and security for 4 ",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3757,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "it's too costly for me",
+  "reply": "A lighter option is ₹2,610/month with ₹1,000 setup. It keeps fibre internet (100 Mbps), backup internet, two business mobile lines for billing and UPI, and email for all 6 staff. It saves you ₹1,132 a month compared with the bigger plan.\n\nWould you like me to ",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3252,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "jio is giving me internet for 500 only",
+  "reply": "I understand the ₹500 offer looks easy. Before deciding, check that it includes a stable business connection, a backup line, and a support helpline, since those keep your clinic running when the main line drops. I can't compare other providers' plans, but I ca",
+  "cards": [],
+  "ms": 2011,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "I don't need CCTV or backup, remove them",
+  "reply": "Backup and CCTV are removed (you didn't have CCTV in the plan). The new monthly total is ₹3,243, with ₹1,500 setup. It still includes fibre internet, two business mobile lines, email for 6 staff, and security for 4 computers.\n\nWould you like me to remove the e",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3375,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "let me think about it and come back",
+  "reply": "Of course, take your time. Your plan is saved, so you can come back whenever you're ready. Would you like me to set a reminder for you, or is there anything you'd like me to check first?",
+  "cards": [],
+  "ms": 1431,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "objections",
+  "user": "no thanks not interested",
+  "reply": "Understood, thank you for your time. I won't push further. If you ever need reliable internet or phone lines for your clinic, Udyam Digital is here to help. Have a great day!",
+  "cards": [],
+  "ms": 1447,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "custom plan",
+  "user": "I need 3 mobile lines and a website for my shop",
+  "reply": "Your plan is ready: 3 mobile lines (₹897) plus the website (₹199), a total of ₹1,096 per month, ₹0 setup, live in about 2 days. Billing and UPI keep working on the mobile lines.\n\nHow many people work in your shop?",
+  "cards": [],
+  "ms": 5523,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "custom plan",
+  "user": "why do I need a website?",
+  "reply": "A website puts your shop online, so customers searching nearby can find your address, timings and phone number. It also gives you your own web address that looks professional on bills and WhatsApp. The Website + Domain Starter is ₹199 a month in your plan.\n\nIs",
+  "cards": [],
+  "ms": 1737,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "custom plan",
+  "user": "add whatsapp business also",
+  "reply": "WhatsApp Business API is added. Your new monthly total is ₹1,695: 3 mobile lines (₹897), website (₹199), and WhatsApp Business (₹599). Setup is ₹0 and it goes live in about 2 days.\n\nHow many people work in your shop?",
+  "cards": [],
+  "ms": 2778,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "custom plan",
+  "user": "what is the total now",
+  "reply": "Your total is ₹1,695 per month, with ₹0 setup. That covers 3 mobile lines (₹897), the website (₹199) and WhatsApp Business (₹599).\n\nHow many people work in your shop?",
+  "cards": [],
+  "ms": 1484,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "custom plan",
+  "user": "that's all show me my plan",
+  "reply": "Before I show your final plan, I need one detail: which city is your shop in?",
+  "cards": [],
+  "ms": 2597,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "hello",
+  "reply": "Please tap the option that best matches your business.",
+  "cards": [],
+  "ms": 2814,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "who are you",
+  "reply": "Tap the option that matches your business, and we'll go from there.",
+  "cards": [],
+  "ms": 3190,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "are you a robot",
+  "reply": "Yes, I'm an automated assistant from Udyam Digital. Which of these best describes your business?",
+  "cards": [],
+  "ms": 2978,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "what is GST",
+  "reply": "GST is the tax registration for businesses in India, with a 15-digit GSTIN. It helps us pick the right plan for you later. Which type of business do you run?",
+  "cards": [],
+  "ms": 1437,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "what's the weather today",
+  "reply": "I can't check the weather, sorry. I can help you find the right internet and phone plan for your business. What kind of business do you run?",
+  "cards": [],
+  "ms": 1631,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "do you work on sundays",
+  "reply": "I'm an automated helper, so I'm available any time, Sundays included. Now, what kind of business do you run?",
+  "cards": [],
+  "ms": 1325,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "off topic and meta",
+  "user": "can I talk to a real person",
+  "reply": "I've passed your chat to our sales team, and they'll reach out to you. Meanwhile, you can tap your business type below so we can get a plan ready.",
+  "cards": [
+   "handoff"
+  ],
+  "ms": 3029,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "hi",
+  "reply": "Tap the option that fits best, or just tell me in your own words.",
+  "cards": [],
+  "ms": 3989,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "I want internet",
+  "reply": "Which best describes your business? Tap one below.",
+  "cards": [],
+  "ms": 2938,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "ok",
+  "reply": "Please pick your business type from the options on screen. Is it a shop, salon or pharmacy, office or clinic, restaurant, factory, or do you only want a mobile plan?",
+  "cards": [],
+  "ms": 2732,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "?",
+  "reply": "I've shown the business type options on screen. Tap the one closest to your work, and we'll find you the right internet plan.",
+  "cards": [],
+  "ms": 2712,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "I have a small shop",
+  "reply": "Got it, a small shop. How many people work there, and how many branches do you have? Tap the closest counts below.",
+  "cards": [
+   "counts"
+  ],
+  "ms": 2717,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "umm not sure",
+  "reply": "Saved your shop. Tap the closest staff count and branch count on screen. A rough guess is fine.",
+  "cards": [
+   "counts"
+  ],
+  "ms": 2808,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "vague and tiny messages",
+  "user": "2 people",
+  "reply": "Here's a starter plan for your shop: 5G internet (live in about 2 days), a business mobile line, and a simple website. It's ₹1,497 a month, no setup fee, 12-month contract. Roughly how much do you pay today for internet and phone?",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3067,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "marathi and tamil",
+  "user": "माझे एक दुकान आहे पुण्यात",
+  "reply": "बरं, पुण्यात दुकान आहे हे छान! तुमच्या दुकानात किती कर्मचारी काम करतात?",
+  "cards": [],
+  "ms": 3195,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "marathi and tamil",
+  "user": "किती खर्च येईल",
+  "reply": "थोड़ा सा समझ लूँ, तभी सही खर्च बता पाऊँगा। तुम्हारे दुकानात किती कर्मचारी आहेत आणि किती शाखा आहेत? खाली दिलेल्या पर्यायांमधून निवडा.",
+  "cards": [
+   "counts"
+  ],
+  "ms": 3872,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "marathi and tamil",
+  "user": "என் கடைக்கு இணையம் வேண்டும்",
+  "reply": "சரி! உங்கள் கடைக்கு இணையம் தேவை என்பது புரிகிறது. உங்கள் கடையில் எத்தனை ஊழியர்கள் வேலை செய்கிறார்கள், எத்தனை கிளைகள் உள்ளன? கீழே உள்ள தேர்வுகளில் இருந்து தேர்ந்தெடுக்கலாம்.",
+  "cards": [
+   "counts"
+  ],
+  "ms": 3404,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "marathi and tamil",
+  "user": "எவ்வளவு ஆகும்",
+  "reply": "உங்கள் விலையை சரியாக சொல்ல, கடையில் எத்தனை ஊழியர்கள் இருக்கிறார்கள், எத்தனை கிளைகள் உள்ளன என்பதை தேர்ந்தெடுக்கவும். கீழே உள்ள பட்டியலில் இருந்து தேர்வு செய்யுங்கள்.",
+  "cards": [
+   "counts"
+  ],
+  "ms": 3307,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "factory",
+  "user": "factory in Pune, 30 workers, GST yes",
+  "reply": "Here's a plan for your factory in Pune: **Factory Connect**, ₹16,025/month, one-time setup ₹45,500, 12-month contract, live in about 21 days. It includes a dedicated 100 Mbps leased line, backup 4G/5G internet, machine connectivity, and email, security and pho",
+  "cards": [
+   "handoff",
+   "plan"
+  ],
+  "ms": 4891,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "factory",
+  "user": "can we get a leased line",
+  "reply": "Yes, you can get it. The Leased Line 100 Mbps is ₹9,000/month, one-time setup ₹30,000, 12-month contract, installed in about 21 days. It gives your machines and systems a dedicated line that never shares bandwidth.\n\nDo you run one site or more than one?",
+  "cards": [],
+  "ms": 3187,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "factory",
+  "user": "how long will installation take",
+  "reply": "Installation takes about 21 days after you confirm. The line is ₹9,000/month, with ₹30,000 one-time setup and a 12-month contract.\n\nDo you run one site or more than one?",
+  "cards": [],
+  "ms": 2797,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "factory",
+  "user": "what happens if the internet goes down at night",
+  "reply": "Your plan includes Backup 4G/5G Failover at ₹499/month. If the main line drops, including at night, backup internet takes over so your work doesn't stop.\n\nDo you run one site or more than one?",
+  "cards": [],
+  "ms": 1439,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "corrections and memory",
+  "user": "Clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees",
+  "reply": "Here's a plan for your clinic: **Clinic & Office Pro, ₹3,742/month** (setup ₹1,500, 12-month contract, live in about 5 days). It includes fibre internet with backup internet, 2 business mobile lines, email for all 6 staff, and security for 4 computers.\n\nDo you",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3307,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "corrections and memory",
+  "user": "actually we are 10 staff",
+  "reply": "With 10 staff, your updated plan is **Clinic & Office Pro, ₹4,218/month** (setup ₹1,500, 12-month contract, live in about 5 days). It covers fibre internet with backup, 2 business mobile lines, email for all 10 people, and security for 4 computers.\n\nHow many c",
+  "cards": [
+   "plan"
+  ],
+  "ms": 2880,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "corrections and memory",
+  "user": "what did I tell you about my business",
+  "reply": "You told me: a clinic in Mumbai, 10 staff, you have a GSTIN, and you pay ₹2,000 a month today for internet and phone. I've saved all of that. Your plan is still Clinic & Office Pro at ₹4,218/month.\n\nHow many clinics or branches do you run?",
+  "cards": [],
+  "ms": 3552,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "corrections and memory",
+  "user": "wait I also have a second branch",
+  "reply": "Thanks, I've noted your second branch. For two branches with 10 staff, the plan is **Multi-Store Connect, ₹7,790/month** (setup ₹10,200, 12-month contract, live in about 5 days). It includes fibre and backup internet at both sites, 2 business mobile lines, and",
+  "cards": [
+   "handoff",
+   "plan"
+  ],
+  "ms": 3557,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "corrections and memory",
+  "user": "so what is my plan now",
+  "reply": "Your plan now is **Multi-Store Connect, ₹7,790/month**, with a setup fee of ₹10,200 and a 12-month contract. It's live in about 5 days.\n\nIt includes:\n- 2 fibre internet lines (300 Mbps) with backup internet\n- 2 business mobile lines\n- 4 CCTV cameras\n\nWould you",
+  "cards": [],
+  "ms": 1650,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "frustrated user",
+  "user": "shop in Haldwani, 20 staff, 3 branches, no GST, skip",
+  "reply": "Your details are saved and the sales team has your lead. Shall I go ahead with the paperwork, or change the plan first?",
+  "cards": [
+   "handoff",
+   "plan"
+  ],
+  "ms": 5349,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "frustrated user",
+  "user": "this is not working",
+  "reply": "I'm sorry it's frustrating. Would you like me to connect you with a person from our sales team to help directly?",
+  "cards": [],
+  "ms": 1320,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "frustrated user",
+  "user": "you are not answering my question",
+  "reply": "I'm sorry, I didn't answer your question. What would you like to know? Ask me about the plan, the price, or the setup, and I'll answer directly.",
+  "cards": [],
+  "ms": 1417,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "frustrated user",
+  "user": "explain again in very simple words, I am not educated",
+  "reply": "Your plan is Multi-Store Connect. It costs ₹10,185 a month, with ₹10,800 one-time setup. It has 12-month contract and goes live in about 3 days.\n\nIt gives internet for all 3 shops, backup internet if main line stops, CCTV to watch shops from phone, and a busin",
+  "cards": [],
+  "ms": 1744,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "frustrated user",
+  "user": "just tell me the price",
+  "reply": "₹10,185 per month, plus ₹10,800 one-time setup.",
+  "cards": [],
+  "ms": 1413,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "savings and comparison",
+  "user": "I run a kirana shop in Jaipur with 2 staff, no GST",
+  "reply": "Here's a plan for your Jaipur kirana shop: **Dukaan Starter, ₹1,497/month**, no setup fee, 12-month contract, live in about 2 days. It includes:\n- 5G AirFiber 100 internet (₹999)\n- Business mobile line (₹299)\n- Website + domain (₹199)\n\nRoughly how much do you ",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3268,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "savings and comparison",
+  "user": "I pay 1200 rupees now for internet, will I save",
+  "reply": "Not quite a saving on paper: Dukaan Starter is ₹1,497/month against your ₹1,200 today, so it costs about ₹297 more. What you get for that is a business mobile line so billing and UPI keep working, plus a website and your own web address so customers can find y",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3351,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "savings and comparison",
+  "user": "what is the cheapest option you have",
+  "reply": "The cheapest option is **₹1,298/month** with a 6-month contract and no setup fee. It includes the 5G AirFiber 100 internet (₹999) and a business mobile line (₹299), and it's live in about 2 days. It drops the website, which saves ₹199 a month.\n\nThat's about ₹9",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3203,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "savings and comparison",
+  "user": "is the website really needed",
+  "reply": "No, it isn't essential. The website is optional. If you skip it, you'll pay about ₹1,298/month with internet and business mobile, and billing and UPI still work the same way.\n\nIt helps only if you want customers to find your shop online. Would you like to go w",
+  "cards": [],
+  "ms": 1885,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "savings and comparison",
+  "user": "ok go ahead",
+  "reply": "Great! Next is the paperwork. It takes a few minutes and uses only 4 documents.",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 5,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "paperwork questions",
+  "user": "Clinic in Mumbai, Tier 1, 6 staff, GSTIN, pays 2000 rupees",
+  "reply": "Here's a plan for your clinic: **Clinic & Office Pro, ₹3,742/month** (today you pay ₹2,000). It includes 300 Mbps fibre with 4G/5G backup so work doesn't stop if the line drops, 2 business mobile lines for billing and UPI, 6 professional email IDs, and securit",
+  "cards": [
+   "plan"
+  ],
+  "ms": 3654,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "paperwork questions",
+  "user": "lets start the paperwork",
+  "reply": "Great! Next is the paperwork. It takes a few minutes and uses only 4 documents.",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 7,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "paperwork questions",
+  "user": "where do I upload the pdf",
+  "reply": "You need 4 documents: GST certificate, Udyam certificate, your ID, and an address proof (a bill from the last 3 months). I've opened the paperwork screen: on each row tap “📷 Photo” or “📎 PDF / file”. No documents handy? Open “Try a sample applicant” at the top",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 5,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "paperwork questions",
+  "user": "what documents do you need from me",
+  "reply": "You need 4 documents: GST certificate, Udyam certificate, your ID, and an address proof (a bill from the last 3 months). I've opened the paperwork screen: on each row tap “📷 Photo” or “📎 PDF / file”. No documents handy? Open “Try a sample applicant” at the top",
+  "cards": [
+   "open_kyc"
+  ],
+  "ms": 6,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "paperwork questions",
+  "user": "is my data safe",
+  "reply": "Yes, your documents are used only to verify your business and set up your connection. I can't go into the technical security details here, but I can connect you with our sales team if you'd like to ask more. Would you like that?",
+  "cards": [],
+  "ms": 1593,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hinglish romanized mess",
+  "user": "mere paas 3 dukaan hai aur 15 log kaam karte hai",
+  "reply": "आपकी 3 दुकानों और 15 लोगों के लिए \"मल्टी-स्टोर कनेक्ट\" प्लान बना है: ₹11,685 प्रति माह, सेटअप ₹15,300, 12 महीने का कॉन्ट्रैक्ट, 5 दिन में चालू। इसमें 3 दुकानों का फाइबर, बैकअप इंटरनेट और CCTV शामिल है। सेल्स टीम से बात के लिए भी जानकारी भेज दी है। आपकी अभी की ",
+  "cards": [
+   "handoff",
+   "plan"
+  ],
+  "ms": 4331,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hinglish romanized mess",
+  "user": "kitna padega sab milake",
+  "reply": "कुल मासिक खर्च ₹11,685 है और एक बार का सेटअप ₹15,300। इसमें 3 दुकानों का फाइबर, बैकअप इंटरनेट, 3 बिज़नेस मोबाइल लाइन और 6 CCTV कैमरे शामिल हैं। आप कितना अभी इंटरनेट और फ़ोन पर महीने में देते हैं?",
+  "cards": [],
+  "ms": 6800,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hinglish romanized mess",
+  "user": "cctv kya hota hai kyu chahiye",
+  "reply": "CCTV यानी कैमरे जो आपकी दुकान की निगरानी करते हैं। \"Cloud CCTV\" में रिकॉर्डिंग इंटरनेट पर सेव होती है, इसलिए आप फ़ोन से कहीं से भी दुकान देख सकते हैं, दिन-रात। इसमें 6 कैमरे हैं, हर दुकान के लिए 2। क्या आप चाहेंगे कि मैं इसकी पूरी जानकारी और कीमत दिखाऊँ?",
+  "cards": [],
+  "ms": 1908,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hinglish romanized mess",
+  "user": "mujhe samajh nahi aaya dobara batao",
+  "reply": "आसान भाषा में: आपके कैमरे की वीडियो इंटरनेट पर सेव होती है। आप मोबाइल फ़ोन खोलकर अपनी किसी भी दुकान को कहीं से भी देख सकते हैं, चाहे दिन हो या रात। हर दुकान में 2 कैमरे लगेंगे। क्या मैं आपको इसकी कीमत बताऊँ?",
+  "cards": [],
+  "ms": 2094,
+  "flags": [],
+  "why": []
+ },
+ {
+  "scenario": "hinglish romanized mess",
+  "user": "sasta wala dikhao",
+  "reply": "यह प्लान पहले से सबसे छोटा है। अगर आप चाहें तो CCTV जैसी अतिरिक्त सेवाएँ हटाकर खर्च कम कर सकते हैं। क्या आप CCTV को हटाना चाहेंगे?",
+  "cards": [],
+  "ms": 2971,
+  "flags": [],
+  "why": []
+ }
+]

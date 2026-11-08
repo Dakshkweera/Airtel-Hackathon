@@ -21,6 +21,7 @@ Reply in the language the owner uses (Hindi in Devanagari if they write Hindi). 
 LANGUAGE
 - Detect the language the owner speaks or writes, even when the text is romanized or garbled by speech recognition ("kya aapane kya bola" is Hindi; Devanagari letters spelling English words means they spoke English).
   Reply in THAT language, in its own native script (Hindi and Marathi in Devanagari, Tamil in Tamil script, and so on), keeping product names, rupee prices and words like GST in English. Never ask which language they prefer, just follow them, and switch when they switch.
+- Always answer in the language of the owner's LAST message, even if earlier messages were in another language. STATE.owner_last_message tells you its script.
 - Call set_language with the code (en, hi, mr, ta, te, bn, gu, kn, ml) whenever their language differs from STATE.reply_language, or when they ask you to change language.
 
 HARD RULES
@@ -83,7 +84,10 @@ TOOLS = [
 def _http_chat(messages, tools):
     key = os.environ["OPENROUTER_API_KEY"]
     model = os.environ.get("CHAT_MODEL", "anthropic/claude-haiku-5.5")
-    body = json.dumps({"model": model, "messages": messages, "tools": tools, "temperature": 0.4, "max_tokens": 400}).encode()
+    # Claude models "think" before answering by default; that thinking ate the whole token budget and left an empty reply
+    # (finish_reason=length, content=null). Short sales chat does not need it: switch it off and leave real headroom.
+    body = json.dumps({"model": model, "messages": messages, "tools": tools, "temperature": 0.4, "max_tokens": 900,
+                       "reasoning": {"enabled": False}}).encode()
     req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", body,
                                  {"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=40) as r:
@@ -117,7 +121,16 @@ def _state(S):
         nxt = "paperwork is open: help with questions about documents"
     else:
         nxt = "help with what they ask"
-    st = dict(next_step=nxt, profile=p, stage=S.get("stage"), mode=S.get("mode"), custom_done=S.get("custom_done"),
+    last = next((h["text"] for h in reversed(S.get("history", [])) if h["role"] == "user"), "")
+    scripts = [("Tamil", "\u0B80", "\u0BFF", "ta"), ("Telugu", "\u0C00", "\u0C7F", "te"), ("Bengali", "\u0980", "\u09FF", "bn"),
+               ("Gujarati", "\u0A80", "\u0AFF", "gu"), ("Kannada", "\u0C80", "\u0CFF", "kn"), ("Malayalam", "\u0D00", "\u0D7F", "ml"),
+               ("Devanagari (Hindi or Marathi)", "\u0900", "\u097F", "hi or mr")]
+    hint = "Latin letters (English, or romanized Hindi/Hinglish: reply in Hindi Devanagari if it is Hindi)"
+    for nm, lo, hi_, code in scripts:
+        if any(lo <= ch <= hi_ for ch in last):
+            hint = f"{nm} script: reply in that language and call set_language({code})"
+            break
+    st = dict(owner_last_message=hint, next_step=nxt, profile=p, stage=S.get("stage"), mode=S.get("mode"), custom_done=S.get("custom_done"),
               current_quote=_summ(S.get("quote")), has_order=bool(S.get("order")), reply_language=S.get("speech_lang") or S["lang"],
               missing_for_best_quote=[k for k, v in (("business_type", p.get("business_type")), ("employees", p.get("employees")),
                                                       ("sites", p.get("sites")), ("city", p.get("city")), ("has_gstin", p.get("has_gstin"))) if v is None])
@@ -162,9 +175,14 @@ def _run_tool(ctx, name, a):
         known = [k for k in ("employees", "sites", "city", "has_gstin") if prof.get(k) is None]
         return dict(quote=_summ(q), assumed_unknown=known, note="Values for unknown facts were assumed; ask the owner for them if they matter.")
     if name == "set_products":
+        q0 = S.get("quote")
+        editing = bool(q0 and q0.get("items")) and (S.get("mode") != "custom" or S.get("custom_done"))   # changing a plan that is already shown
         if not S.get("custom") or S.get("mode") != "custom":
-            S["mode"], S["custom_done"] = "custom", False
+            S["mode"], S["custom_done"] = "custom", editing
             S["custom"] = dict(items={}, suggested=[], no_suggest=False, refused_seen=[], est_noted=False)
+        if editing:
+            S["custom"]["items"] = dict(q0["quantities"])        # the quote on screen is the truth (toggles may have changed it)
+            S["custom_done"] = True
         items = S["custom"]["items"]
         for op in a.get("ops", []):
             pid, qty = op.get("id"), int(op.get("qty", 1))
@@ -177,6 +195,8 @@ def _run_tool(ctx, name, a):
         q, known = advisor.custom_quote(S, lang)
         S["quote"], S["plan_key"], S["dropped"] = q, "custom", list(q["refused"])
         S["stage"] = "plan" if q["items"] else S["stage"]
+        if editing and q["items"]:
+            ctx.cards.append(advisor.card_for(S, q))
         S["trace"].append(dict(tool="set_products", args=",".join(f"{k}×{v}" for k, v in items.items()) or "empty",
                                result=f"₹{q['totals']['monthly']:,}/mo" + (" (estimate)" if q["estimate"] else "")))
         return dict(quote=_summ(q), still_unknown=[k for k, v in (("city", not prof.get("city")), ("staff_count", prof.get("employees") is None),
@@ -271,6 +291,7 @@ def run(S, text, lang):
     msgs = [dict(role="system", content=SYSTEM + _catalogue_line()),
             dict(role="system", content="STATE (truth, from the server): " + _state(S))] + hist
     try:
+        empties = 0
         for _ in range(MAX_ROUNDS):
             try:
                 m = _http_chat(msgs, TOOLS)
@@ -279,7 +300,12 @@ def run(S, text, lang):
             calls = m.get("tool_calls") or []
             if not calls:
                 reply = (m.get("content") or "").strip()
-                if not reply:
+                if not reply:                       # the model sometimes answers with nothing: ask it again, do not give up
+                    empties += 1
+                    if empties <= 2:
+                        msgs.append(dict(role="system", content="Your last reply was empty. Answer the owner's last message now, in their language, in under 60 words, using tools for any fact."))
+                        continue
+                    S["trace"].append(dict(tool="llm", args="", result="empty reply twice"))
                     return None
                 return _assemble(S, ctx, reply)
             msgs.append(dict(role="assistant", content=m.get("content") or "", tool_calls=calls))
@@ -292,7 +318,15 @@ def run(S, text, lang):
                 msgs.append(dict(role="tool", tool_call_id=c["id"], content=json.dumps(res, ensure_ascii=False)))
         return None
     except Exception as e:  # network, bad key, malformed reply: fall back, never go silent
-        S["trace"].append(dict(tool="llm", args="", result=f"unavailable ({type(e).__name__}); keyword advisor used"))
+        detail = type(e).__name__
+        if hasattr(e, "code"):
+            try:
+                detail += f" {e.code}: " + e.read().decode("utf-8", "ignore")[:140]
+            except Exception:
+                detail += f" {e.code}"
+        else:
+            detail += ": " + str(e)[:140]
+        S["trace"].append(dict(tool="llm", args="", result=f"unavailable ({detail}); keyword advisor used"))
         return None
 
 

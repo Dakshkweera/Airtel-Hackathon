@@ -31,6 +31,23 @@ except Exception:
     SESSIONS = {}
 
 
+TURN_LOG = Path(os.environ.get("UD_TURN_LOG") or (ROOT / "data" / "turn_log.jsonl"))
+
+
+def log_turn(S, text, msgs, ms):
+    """One line per owner message: was the AI used, did it fall back, how long. Lets problems be found without anyone reporting them."""
+    try:
+        llm_ok = any(t.get("tool") == "llm" and str(t.get("result", "")).startswith("wrote the reply") for t in S.get("trace", []))
+        fell_back = bool(text) and not llm_ok and bool(os.environ.get("OPENROUTER_API_KEY"))
+        reply = " ".join((m.get("text") or "") for m in msgs)[:300]
+        row = dict(ts=datetime.now().isoformat(timespec="seconds"), sid=S["id"], user=(text or "")[:200], llm_answered=llm_ok,
+                   fell_back=fell_back, ms=ms, reply=reply, trace=[t.get("tool") + ":" + str(t.get("result"))[:60] for t in S.get("trace", [])][:6])
+        with open(TURN_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
 def save():
     try:
         STORE.write_text(json.dumps(SESSIONS, default=str), encoding="utf-8")
@@ -188,6 +205,7 @@ def api_lang(b: LangIn):
 def api_chat(b: ChatIn):
     S = sess(b.session_id)
     remember(S, "user", b.label or b.message)
+    t_start = datetime.now()
     was_locked = S.get("lang_locked")
     if b.voice:                      # a speech transcript in the wrong script must never flip the app's language
         S["lang_locked"] = True
@@ -196,6 +214,8 @@ def api_chat(b: ChatIn):
     finally:
         if b.voice:
             S["lang_locked"] = was_locked
+    log_turn(S, b.message, msgs, int((datetime.now() - t_start).total_seconds() * 1000))
+    S["_last_chips"] = next((m["chips"] for m in reversed(msgs) if m.get("chips")), [])
     for msg in msgs:
         remember(S, "bot", msg.get("text"))
     for msg in msgs:
@@ -473,6 +493,20 @@ def staff_leads():
 @app.get("/api/kyc/samples-detail")
 def samples_detail():
     return data.SAMPLES
+
+
+@app.get("/api/debug/turns")
+def debug_turns(n: int = 60, only_problems: bool = False):
+    """Recent owner messages and how they were handled. Problems = the AI did not answer, so a keyword fallback did."""
+    rows = []
+    try:
+        for line in TURN_LOG.read_text(encoding="utf-8").splitlines()[-500:]:
+            rows.append(json.loads(line))
+    except Exception:
+        pass
+    if only_problems:
+        rows = [r for r in rows if r.get("fell_back")]
+    return rows[-n:]
 
 
 @app.get("/api/scenarios")

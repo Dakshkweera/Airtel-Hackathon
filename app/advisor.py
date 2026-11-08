@@ -80,6 +80,7 @@ SUGGEST = {"INTERNET": ["P09"], "P16": ["P20", "P17"], "P18": ["P15"], "P19": ["
 PRICEQ = r"how much|price of|\bprice\b|cost of|kitna|कितना|कीमत|रेट|charges|\brate\b"
 GREET = r"^(hello|hi+|hey+|namaste|namaskar|ok|okay|yes|no|help|test|start|hola|हेलो|हाय|नमस्ते|नमस्कार)(\b|$)"
 NEEDVERB = r"\b(need|want|require|looking for|add|get me|chahiye|chahie)\b|चाहिए|चाहिये|लेना है|दीजिए"
+GO_NOW = r"^(yes|ok|okay|continue|proceed|start|go ahead|sure|haan|haanji|ha|हाँ|हां|आगे|ठीक है|चलो|theek hai|thik hai|aage|agey|shuru)" + chr(92) + r"b|aage badh|आगे बढ़|let" + chr(39) + r"?s (go|do it|start|proceed)|go ahead|शुरू करो|shuru kar|proceed|paperwork|kyc|कागज़ी कार्रवाई"
 UPLOADQ = r"pdf|upload|submit|document|docs|paper|photo|picture|scan|certificate|aadhaar|aadhar|pan card|button|option|where|how do i|कहां|कहाँ|कैसे|सबमिट|अपलोड|पीडीएफ|पीडीफ|दस्तावेज|कागज|डॉक्यूमेंट|फोटो|फ़ोटो|बटन|ऑप्शन|विकल्प|दिख|दिखा"
 OPEN_KYC_CHIP = dict(label="📄 Open paperwork", hi="📄 कागज़ात खोलें", action="start_kyc")
 RECALL = r"what (did|have) i (say|said|tell|told)|what do you (know|remember)|do you remember|remind me what|मैंने क्या बताया|क्या याद|याद है|क्या पता है"
@@ -471,6 +472,12 @@ def handle(S, text="", payload=None):
         S["asked"] = None
     asked = S.get("asked")
 
+    # ---- a short, clear "go ahead" while the plan and its Continue button are on screen: just do it
+    if (text and S.get("stage") == "plan" and S.get("quote") and S["quote"].get("items") and not (S.get("mode") == "custom" and not S.get("custom_done")) and len(text.split()) <= 6
+            and re.search(GO_NOW, text.lower()) and any(c.get("action") == "start_kyc" for c in (S.get("_last_chips") or []))):
+        S["trace"].append(dict(tool="open_paperwork", args=text[:50], result="owner said go ahead"))
+        return start_kyc(S, lang)
+
     # ---- paperwork is open and the owner asks where/how to upload: show the screen again, never guess
     if text and S.get("stage") == "kyc" and re.search(UPLOADQ, text.lower()):
         S["trace"].append(dict(tool="open_paperwork", args=text[:50], result="re-opened the paperwork screen"))
@@ -483,7 +490,13 @@ def handle(S, text="", payload=None):
         said = text or (f"[counts: {payload.get('staff')} staff, {payload.get('sites')} branch(es)]" if slot == "counts" else f"[{slot}: {payload.get('value')}]")
         r = llm_agent.run(S, said, lang)
         if r is not None:
+            S["llm_fail"] = 0
             return r
+        S["llm_fail"] = S.get("llm_fail", 0) + 1
+        if text and not payload.get("slot") and S["llm_fail"] == 1:
+            # first miss on a free-text message: say so honestly instead of carrying on with the questionnaire
+            S["trace"].append(dict(tool="llm", args="", result="no answer; asked the owner to repeat"))
+            return [dict(text=t("llm_retry", lang), chips=S.get("_last_chips") or [])]
 
     low = text.lower()
     # ---- global intents

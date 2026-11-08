@@ -90,7 +90,8 @@ def _vision(image_bytes):
     b64 = base64.b64encode(image_bytes).decode()
     body = json.dumps({"model": model, "messages": [{"role": "user", "content": [
         {"type": "text", "text": VISION_PROMPT},
-        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}]}).encode()
+        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}],
+        "max_tokens": 700, "reasoning": {"enabled": False}}).encode()
     req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", body,
                                  {"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
     try:
