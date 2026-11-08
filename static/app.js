@@ -286,7 +286,8 @@ function handoffCard() {
 
 /* ---- plan card ---- */
 function planCard(c) {
-  document.querySelectorAll(".card.plan").forEach(e => e.classList.add("stale"));
+  // a "smaller option" sits next to the current plan (owner can still keep it), so that plan is only dimmed, not superseded
+  document.querySelectorAll(".card.plan").forEach(e => { e.classList.add("stale"); e.classList.toggle("held", !!c.smaller && !e.classList.contains("smaller")); });
   const el = h("div", { class: "card plan" + (c.smaller ? " smaller" : "") });
   el._opts = { handoff: c.handoff, smaller: c.smaller };
   S.quote = c.quote;
@@ -410,7 +411,7 @@ async function setLang(l) {
   applyLang(r.lang, true);
   if (r.quote) {
     S.quote = r.quote;
-    const cards = document.querySelectorAll(".card.plan:not(.stale)");
+    const cards = document.querySelectorAll(".card.plan:not(.smaller):not(.stale), .card.plan.held");   // the owner's current plan, never the "smaller option"
     const el = cards[cards.length - 1];
     if (el) { el._opts.handoff = r.quote.handoff; paintPlan(el, r.quote); }
   }

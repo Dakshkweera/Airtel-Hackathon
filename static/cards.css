@@ -20,8 +20,8 @@
 .price .big{font-size:32px;line-height:40px;font-weight:800;color:var(--primary);display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
 .price .big small{font-size:16px;font-weight:600;color:var(--ink-2)}
 .price .big .pill{align-self:center;margin-left:auto}
-.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.meta span{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px;font-size:12px;line-height:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.meta>span{flex:1 1 auto;white-space:nowrap;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px;font-size:12px;line-height:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
 .meta .ms{color:var(--primary);font-size:18px}
 .save{margin:0 16px 14px;padding:12px;border-radius:var(--r);display:flex;gap:10px;align-items:flex-start}
 .save .ms{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:18px}
@@ -80,14 +80,15 @@
 .card.plan.smaller details{border-top:1px solid var(--line);padding:12px 16px}
 .card.plan.smaller summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--saffron-2)}
 .card.plan.smaller details .item{margin-top:8px}
-.card.plan.stale{background:var(--surf-low)}
-.card.plan.stale .plan-band{background:var(--surf-high);color:var(--ink-2)}
-.card.plan.stale .plan-band .ms{color:var(--ink-2)}
-.card.plan.stale .plan-band .stale-tag{display:inline-flex}
-.card.plan.stale .card-h h3,.card.plan.stale .price .big{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:2px}
-.card.plan.stale .price{background:transparent;padding-top:0;padding-bottom:0}
-.card.plan.stale .price .big{font-size:24px;line-height:30px}
-.card.plan.stale :is(.meta,.save,.sec,.cta,details,.price .pill){display:none}
+.card.plan.held{opacity:.7}
+.card.plan.stale:not(.held){background:var(--surf-low)}
+.card.plan.stale:not(.held) .plan-band{background:var(--surf-high);color:var(--ink-2)}
+.card.plan.stale:not(.held) .plan-band .ms{color:var(--ink-2)}
+.card.plan.stale:not(.held) .plan-band .stale-tag{display:inline-flex}
+.card.plan.stale:not(.held) .card-h h3,.card.plan.stale:not(.held) .price .big{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:2px}
+.card.plan.stale:not(.held) .price{background:transparent;padding-top:0;padding-bottom:0}
+.card.plan.stale:not(.held) .price .big{font-size:24px;line-height:30px}
+.card.plan.stale:not(.held) :is(.meta,.save,.sec,.cta,details,.price .pill){display:none}
 
 /* ---------- counts card ---------- */
 .counts{padding:6px 16px 16px}
