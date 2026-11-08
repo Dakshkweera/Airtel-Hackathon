@@ -1,0 +1,13 @@
+{
+  "doc_type": "gst_certificate",
+  "legal_name": "Gupta Medical Store",
+  "trade_name": "Gupta Medical Store",
+  "gstin": "09ZZZZZ9999Z1Z6",
+  "udyam_number": null,
+  "person_name": null,
+  "id_number": null,
+  "address": "8 Hazratganj, Lucknow, 226001",
+  "document_date": "2025-04-01",
+  "expiry_date": null,
+  "confidence": 0.96
+}

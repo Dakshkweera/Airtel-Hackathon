@@ -1,0 +1,26 @@
+product_id,name,category,price_min_inr_per_month,price_max_inr_per_month,one_time_setup_inr,min_contract_months,typical_install_days,available_city_tiers,min_employees,min_sites,requires_gstin,requires_one_of
+P01,Biz Fibre 1G,internet,2999,3748,1500,12,7,1,1,1,N,
+P02,Biz Fibre 300,internet,1499,1873,1500,12,5,1|2,1,1,N,
+P03,Biz Fibre 100,internet,799,998,1000,12,5,1|2,1,1,N,
+P04,Biz 5G AirFiber 100,internet,999,1248,0,6,2,1|2|3,1,1,N,
+P05,Leased Line 100 Mbps,internet,9000,11250,30000,12,21,1|2,10,1,Y,
+P06,Business Landline Voice,voice,299,373,0,6,3,1|2,1,1,N,
+P07,Business Postpaid 299,mobile,299,373,0,1,1,1|2|3,1,1,N,
+P08,IoT SIM,iot,299,373,500,12,3,1|2,1,1,Y,
+P09,Backup 4G/5G Failover,internet,499,623,0,12,2,1|2|3,1,1,N,P01|P02|P03|P04|P05
+P10,SD-WAN,network,1300,1625,5000,12,10,1|2,1,3,Y,
+P11,Cloud Telephony,voice,399,498,0,6,2,1|2,2,1,N,
+P12,Video Conferencing,collab,349,436,0,6,1,1|2|3,3,1,N,
+P13,Static IP,internet,299,373,0,12,1,1|2,1,1,N,P01|P02|P03|P05
+P14,Managed Router,network,199,248,0,12,2,1|2|3,1,1,N,P01|P02|P03|P04|P05
+P15,WhatsApp Business API,marketing,599,748,0,6,1,1|2|3,1,1,Y,
+P16,Cloud Email,collab,119,148,0,12,0,1|2|3,1,1,N,
+P17,Cloud Backup 1 TB,cloud,499,623,0,12,0,1|2|3,1,1,N,
+P18,Website + Domain Starter,digital,199,248,0,12,2,1|2|3,1,1,N,
+P19,Cloud POS,retail,399,498,0,12,1,1|2|3,1,1,N,
+P20,Endpoint Security,security,108,135,0,12,0,1|2|3,1,1,N,
+P21,Industrial IoT Gateway,iot,1369,1711,10000,12,14,1|2,10,1,Y,
+P22,Secure Wi-Fi,security,249,311,0,12,1,1|2|3,1,1,N,P01|P02|P03|P04|P05
+P23,Cloud CCTV,security,799,998,1800,12,3,1|2|3,1,1,N,P01|P02|P03|P04
+P24,Cloud Telephony Seat,voice,199,248,400,12,1,1|2,1,1,N,
+P25,Accounting Software,digital,249,311,0,12,0,1|2|3,1,1,N,

@@ -1,0 +1,13 @@
+{
+  "doc_type": "address_proof",
+  "legal_name": null,
+  "trade_name": null,
+  "gstin": null,
+  "udyam_number": null,
+  "person_name": "Owner of Joshi",
+  "id_number": null,
+  "address": "17 Sitabuldi, Nagpur, 440001",
+  "document_date": "2026-06-28",
+  "expiry_date": null,
+  "confidence": 0.96
+}

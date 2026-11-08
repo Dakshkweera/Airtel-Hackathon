@@ -1,0 +1,13 @@
+{
+  "doc_type": "gst_certificate",
+  "legal_name": "Joshi Sweets",
+  "trade_name": "Joshi Sweets",
+  "gstin": "27GHJKL7890M1ZK",
+  "udyam_number": null,
+  "person_name": null,
+  "id_number": null,
+  "address": "17 Sitabuldi, Nagpur, 440001",
+  "document_date": "2025-04-01",
+  "expiry_date": null,
+  "confidence": 0.96
+}

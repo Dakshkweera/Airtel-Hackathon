@@ -1,0 +1,13 @@
+{
+  "doc_type": "signatory_id",
+  "legal_name": null,
+  "trade_name": null,
+  "gstin": null,
+  "udyam_number": null,
+  "person_name": "Owner of Nair",
+  "id_number": "XXXX XXXX 4821",
+  "address": null,
+  "document_date": null,
+  "expiry_date": "2031-04-30",
+  "confidence": 0.96
+}

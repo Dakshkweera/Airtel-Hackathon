@@ -1,0 +1,13 @@
+{
+  "doc_type": "gst_certificate",
+  "legal_name": "Khan Boutique",
+  "trade_name": "Khan Boutique",
+  "gstin": "23JKLMN9012P1ZM",
+  "udyam_number": null,
+  "person_name": null,
+  "id_number": null,
+  "address": "31 Palasia, Indore, 452010",
+  "document_date": "2025-04-01",
+  "expiry_date": null,
+  "confidence": 0.96
+}

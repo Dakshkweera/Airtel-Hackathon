@@ -1,0 +1,13 @@
+{
+  "doc_type": "gst_certificate",
+  "legal_name": "Das Stationers",
+  "trade_name": "Das Stationers",
+  "gstin": "19MNPQR2345S1ZI",
+  "udyam_number": null,
+  "person_name": null,
+  "id_number": null,
+  "address": "27 College Street, Kolkata, 700001",
+  "document_date": "2025-04-01",
+  "expiry_date": null,
+  "confidence": 0.96
+}

@@ -1,0 +1,157 @@
+[
+  {
+    "id": "K01",
+    "label": "Meena Dental Clinic, Indore",
+    "issue": "Everything correct",
+    "typed_gstin": "23ABCDE1234F1Z8",
+    "udyam_number": "UDYAM-MP-23-0001001",
+    "docs": {
+      "gst_certificate": "K01/gst_certificate.png",
+      "udyam_certificate": "K01/udyam_certificate.png",
+      "signatory_id": "K01/signatory_id.png",
+      "address_proof": "K01/address_proof.png"
+    }
+  },
+  {
+    "id": "K02",
+    "label": "Sharma & Associates, Jaipur",
+    "issue": "Business name differs between GST and Udyam certificates",
+    "typed_gstin": "08BCDEF2345G1ZL",
+    "udyam_number": "UDYAM-RJ-08-0001002",
+    "docs": {
+      "gst_certificate": "K02/gst_certificate.png",
+      "udyam_certificate": "K02/udyam_certificate.png",
+      "signatory_id": "K02/signatory_id.png",
+      "address_proof": "K02/address_proof.png"
+    }
+  },
+  {
+    "id": "K03",
+    "label": "Gupta Medical Store, Lucknow",
+    "issue": "GST number on certificate differs from the one typed",
+    "typed_gstin": "09CDEFG3456H1Z4",
+    "udyam_number": "UDYAM-UP-09-0001003",
+    "docs": {
+      "gst_certificate": "K03/gst_certificate.png",
+      "udyam_certificate": "K03/udyam_certificate.png",
+      "signatory_id": "K03/signatory_id.png",
+      "address_proof": "K03/address_proof.png"
+    }
+  },
+  {
+    "id": "K04",
+    "label": "Rao Coaching Classes, Pune",
+    "issue": "Electricity bill is older than 3 months",
+    "typed_gstin": "27DEFGH4567J1ZO",
+    "udyam_number": "UDYAM-MH-27-0001004",
+    "docs": {
+      "gst_certificate": "K04/gst_certificate.png",
+      "udyam_certificate": "K04/udyam_certificate.png",
+      "signatory_id": "K04/signatory_id.png",
+      "address_proof": "K04/address_proof.png"
+    }
+  },
+  {
+    "id": "K05",
+    "label": "Singh Unisex Salon, Chandigarh",
+    "issue": "Udyam certificate not uploaded",
+    "typed_gstin": "04EFGHJ5678K1ZG",
+    "udyam_number": "UDYAM-CH-04-0001005",
+    "docs": {
+      "gst_certificate": "K05/gst_certificate.png",
+      "signatory_id": "K05/signatory_id.png",
+      "address_proof": "K05/address_proof.png"
+    }
+  },
+  {
+    "id": "K06",
+    "label": "Patel Kirana Store, Ahmedabad",
+    "issue": "GST registration is cancelled",
+    "typed_gstin": "24FGHJK6789L1ZW",
+    "udyam_number": "UDYAM-GJ-24-0001006",
+    "docs": {
+      "gst_certificate": "K06/gst_certificate.png",
+      "udyam_certificate": "K06/udyam_certificate.png",
+      "signatory_id": "K06/signatory_id.png",
+      "address_proof": "K06/address_proof.png"
+    }
+  },
+  {
+    "id": "K07",
+    "label": "Joshi Sweets, Nagpur",
+    "issue": "GST registration is suspended",
+    "typed_gstin": "27GHJKL7890M1ZK",
+    "udyam_number": "UDYAM-MH-27-0001007",
+    "docs": {
+      "gst_certificate": "K07/gst_certificate.png",
+      "udyam_certificate": "K07/udyam_certificate.png",
+      "signatory_id": "K07/signatory_id.png",
+      "address_proof": "K07/address_proof.png"
+    }
+  },
+  {
+    "id": "K08",
+    "label": "Iyer Tutorials, Chennai",
+    "issue": "Signatory ID has expired",
+    "typed_gstin": "33HJKLM8901N1ZT",
+    "udyam_number": "UDYAM-TN-33-0001008",
+    "docs": {
+      "gst_certificate": "K08/gst_certificate.png",
+      "udyam_certificate": "K08/udyam_certificate.png",
+      "signatory_id": "K08/signatory_id.png",
+      "address_proof": "K08/address_proof.png"
+    }
+  },
+  {
+    "id": "K09",
+    "label": "Khan Boutique, Indore",
+    "issue": "Address on bill is in a different city",
+    "typed_gstin": "23JKLMN9012P1ZM",
+    "udyam_number": "UDYAM-MP-23-0001009",
+    "docs": {
+      "gst_certificate": "K09/gst_certificate.png",
+      "udyam_certificate": "K09/udyam_certificate.png",
+      "signatory_id": "K09/signatory_id.png",
+      "address_proof": "K09/address_proof.png"
+    }
+  },
+  {
+    "id": "K10",
+    "label": "Nair Hardware, Kochi",
+    "issue": "Typing mistake in GST number",
+    "typed_gstin": "32KLMNP0123Q1ZA",
+    "udyam_number": "UDYAM-KL-32-0001010",
+    "docs": {
+      "gst_certificate": "K10/gst_certificate.png",
+      "udyam_certificate": "K10/udyam_certificate.png",
+      "signatory_id": "K10/signatory_id.png",
+      "address_proof": "K10/address_proof.png"
+    }
+  },
+  {
+    "id": "K11",
+    "label": "Reddy Electronics, Hyderabad",
+    "issue": "Udyam number not found",
+    "typed_gstin": "36LMNPQ1234R1Z2",
+    "udyam_number": "UDYAM-TS-36-0009999",
+    "docs": {
+      "gst_certificate": "K11/gst_certificate.png",
+      "udyam_certificate": "K11/udyam_certificate.png",
+      "signatory_id": "K11/signatory_id.png",
+      "address_proof": "K11/address_proof.png"
+    }
+  },
+  {
+    "id": "K12",
+    "label": "Das Stationers, Kolkata",
+    "issue": "Blurry bill, sent for human review",
+    "typed_gstin": "19MNPQR2345S1ZI",
+    "udyam_number": "UDYAM-WB-19-0001012",
+    "docs": {
+      "gst_certificate": "K12/gst_certificate.png",
+      "udyam_certificate": "K12/udyam_certificate.png",
+      "signatory_id": "K12/signatory_id.png",
+      "address_proof": "K12/address_proof.png"
+    }
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "doc_type": "gst_certificate",
+  "legal_name": "Iyer Tutorials",
+  "trade_name": "Iyer Tutorials",
+  "gstin": "33HJKLM8901N1ZT",
+  "udyam_number": null,
+  "person_name": null,
+  "id_number": null,
+  "address": "9 Anna Salai, Chennai, 600001",
+  "document_date": "2025-04-01",
+  "expiry_date": null,
+  "confidence": 0.96
+}

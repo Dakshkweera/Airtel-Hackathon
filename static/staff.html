@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Udyam Digital · Staff</title>
+<link rel="stylesheet" href="/static/styles.css">
+<style>
+body{display:block;padding:20px;background:var(--chat-bg)}
+.wrap{max-width:860px;margin:0 auto}
+h1{margin:0 0 4px;font-size:24px}.sub{color:var(--ink-2);margin:0 0 16px}
+.lead{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px;animation:rise .3s both}
+.score{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:19px;color:#fff}
+.hi{background:var(--green)}.mid{background:var(--amber)}.lo{background:#8394a0}
+.lead b{font-size:16px}.lead p{margin:2px 0 0;color:var(--ink-2);font-size:13.5px}
+.why{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--blue-soft);color:var(--blue);white-space:nowrap}
+.tag2{font-size:11px;color:var(--ink-3);margin-left:6px}
+@media(max-width:560px){.lead{grid-template-columns:56px 1fr}.why{grid-column:1/-1;justify-self:start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Leads to work today</h1>
+  <p class="sub">Stuck and hand-over leads, highest score first. Sales staff and partners see context and score, never document images or full IDs. <a class="link" href="/">← Back to the app</a></p>
+  <div id="list"></div>
+</div>
+<script>
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function load(){
+  const d=await (await fetch("/api/staff/leads")).json();
+  document.getElementById("list").innerHTML=d.map((l,i)=>`<div class="lead" style="animation-delay:${i*40}ms">
+    <div class="score ${l.score>=75?"hi":l.score>=50?"mid":"lo"}" title="Priority score">${l.score}</div>
+    <div><b>${esc(l.name)}${l.sample?'<span class="tag2">sample</span>':""}</b><p>${esc(l.summary)}</p></div>
+    <span class="why">${esc(l.reason)}</span></div>`).join("");
+}
+load(); setInterval(load,4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "doc_type": "address_proof",
+  "legal_name": null,
+  "trade_name": null,
+  "gstin": null,
+  "udyam_number": null,
+  "person_name": "Owner of Rao",
+  "id_number": null,
+  "address": "22 FC Road, Pune, 411001",
+  "document_date": "2026-03-20",
+  "expiry_date": null,
+  "confidence": 0.96
+}
