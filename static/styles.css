@@ -136,6 +136,7 @@ input,select{font:inherit;color:inherit}
 .sheet-h{background:var(--card);padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
 .sheet-h b{flex:1;font-size:20px;line-height:28px;color:var(--primary);font-weight:700;display:flex;align-items:center;gap:8px}
 .sheet-b{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.sheet-b>*{flex:none}
 .sheet-f{padding:12px 14px 16px;background:var(--card);border-top:1px solid var(--line);box-shadow:var(--float);display:flex;flex-direction:column;gap:8px}
 .sheet-f:empty{display:none}
 
@@ -154,3 +155,6 @@ input,select{font:inherit;color:inherit}
 
 /* side panels are styled in harness.css; hidden by default */
 .side{display:none}
+.pill.solid-red{background:var(--red);color:#fff}
+.pill.solid-saffron{background:var(--saffron);color:#fff}
+.pill.solid-blue{background:var(--blue);color:#fff}

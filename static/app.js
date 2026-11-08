@@ -43,7 +43,9 @@ const UI = {
     listenFree: "Listening… just talk, I'll understand", botName: "Sahayak AI", you: "You",
     saveT: "You save {x} / month", saveSub: "Compared with the {y} you pay today", moreT: "{x}/month more", moreSub: "Than the {y} you pay today",
     sameT: "Same as today", sameSub: "Matches the {y} you pay today", superseded: "Superseded", bestFit: "Best fit for you",
-    needsSel: "{n} selected", add: "Add", tapToggle: "Tap to toggle", optional: "Optional", whatIn: "What's in this plan"
+    needsSel: "{n} selected", add: "Add", tapToggle: "Tap to toggle", optional: "Optional", whatIn: "What's in this plan",
+    stepOf: "Step {n} of 3", stepNames: ["Consent & privacy", "Numbers & documents", "Verification results"], passed: "Passed",
+    kindPill: { pass: "Verified", fail: "Needs fix", review: "In review", warn: "Plan changed" }, auditT: "Check details", nChecks: "{n} checks run"
   },
   hi: {
     sub: "Accel Business · ऑनलाइन", ph: "संदेश लिखें…", steps: ["चैट", "प्लान", "कागज़ात", "ट्रैक"],
@@ -85,7 +87,9 @@ const UI = {
     listenFree: "सुन रहा हूँ… बस बोलिए, मैं समझ लूँगा", botName: "सहायक AI", you: "आप",
     saveT: "हर महीने {x} की बचत", saveSub: "आज के {y} के मुकाबले", moreT: "हर महीने {x} ज़्यादा", moreSub: "आज के {y} से",
     sameT: "आज के बराबर", sameSub: "आज के {y} जितना", superseded: "पुराना", bestFit: "आपके लिए सबसे सही",
-    needsSel: "{n} चुने गए", add: "जोड़ें", tapToggle: "टैप करें", optional: "वैकल्पिक", whatIn: "इस प्लान में क्या है"
+    needsSel: "{n} चुने गए", add: "जोड़ें", tapToggle: "टैप करें", optional: "वैकल्पिक", whatIn: "इस प्लान में क्या है",
+    stepOf: "चरण {n} / 3", stepNames: ["सहमति और निजता", "नंबर और दस्तावेज़", "जाँच के नतीजे"], passed: "पास",
+    kindPill: { pass: "सत्यापित", fail: "ठीक करें", review: "रिव्यू में", warn: "प्लान बदला" }, auditT: "जाँच का ब्योरा", nChecks: "{n} जाँच हुईं"
   }
 };
 /* Material Symbols names per catalogue product */
@@ -427,35 +431,44 @@ async function openKyc() {
 $("#kycClose").onclick = () => { sheet.classList.remove("open"); K.open = false; setChips(S.lastChips); };
 $("#stepper").addEventListener("click", e => { if (S.stage === "kyc" && e.target.closest(".step:nth-child(3)")) openKyc(); });
 
+function kycStep() { return !K.consent ? 1 : K.results ? 3 : 2; }
+function paintKycHead() {
+  const U = ui(), n = kycStep();
+  $("#kycTitle").textContent = U.pw;
+  $("#kycStep").textContent = U.stepOf.replace("{n}", n) + ": " + U.stepNames[n - 1];
+  document.querySelectorAll("#kycProg i").forEach((el, i) => { el.className = i + 1 < n ? "done" : i + 1 === n ? "on" : ""; });
+}
+
 function renderKyc() {
   const U = ui(), body = $("#kycBody"), foot = $("#kycFoot");
-  $("#kycTitle").textContent = U.pw;
+  paintKycHead();
   const keepScroll = body.scrollTop; body.innerHTML = ""; foot.innerHTML = "";
   if (!K.consent) {
-    const lines = [["🗂️", U.c1], ["🎯", U.c2], ["⏳", U.c3], ["⚖️", U.c4]].map(([i, c]) => `<li><span>${i}</span><div><b>${esc(c[0])}</b><small>${esc(c[1])}</small></div></li>`).join("");
-    const b = h("div", { class: "blk", html: `<h3>🔐 ${esc(U.consentT)}</h3><p>${esc(U.consentLead)}</p><ul class="lines">${lines}</ul>
-      <label class="check"><input type="checkbox" id="agree"><span>${esc(U.agree)}</span></label>` });
-    const btn = h("button", { class: "btn", id: "agreeBtn", disabled: true, text: U.agreeBtn });
-    b.append(h("div", { style: "margin-top:10px" }, btn));
-    $("#agree", b).onchange = e => btn.disabled = !e.target.checked;
+    body.append(h("div", { class: "hero", html: `<div class="ico">${ic("shield_lock")}</div><h2>${esc(U.consentT)}</h2><p>${esc(U.consentLead)}</p>${ic("verified_user", "bg")}` }));
+    [["folder_open", U.c1], ["verified", U.c2], ["timer", U.c3], ["key", U.c4]].forEach(([i, c]) =>
+      body.append(h("div", { class: "blk info", html: `<div class="ico">${ic(i)}</div><div><b>${esc(c[0])}</b><p>${esc(c[1])}</p></div>` })));
+    const agree = h("label", { class: "agree", html: `<input type="checkbox" id="agree"><div><b>${esc(U.agree)}</b></div>` });
+    body.append(agree);
+    const btn = h("button", { class: "btn", id: "agreeBtn", disabled: true, html: esc(U.agreeBtn) + ic("arrow_forward") });
+    $("#agree", agree).onchange = e => btn.disabled = !e.target.checked;
     btn.onclick = async () => { await api("/api/consent", { session_id: S.sid }); K.consent = { version: "v1.0" }; renderKyc(); };
-    body.append(b);
-    foot.append(h("div", { class: "fine", text: "🔒 " + U.locked2 }));
+    foot.append(btn, h("div", { class: "fine", html: ic("lock", "xs") + esc(U.locked2) }));
     return;
   }
   // consent recorded bar
-  body.append(h("div", { class: "fine", style: "display:flex;justify-content:space-between;align-items:center;padding:0 4px" },
-    h("span", { text: "✓ " + U.consentOk + " (" + (K.consent.version || "v1.0") + ")" }),
-    h("button", { class: "x-btn", style: "font-size:12px;width:auto;padding:4px 10px;color:var(--red)", text: U.withdraw, onclick: withdraw })));
+  body.append(h("div", { class: "cbar" },
+    h("span", { html: ic("verified_user", "sm") + esc(U.consentOk + " (" + (K.consent.version || "v1.0") + ")") }),
+    h("button", { type: "button", text: U.withdraw, onclick: withdraw })));
   body.append(h("div", { id: "kRes" }));
   body.append(demoBlock());
   body.append(idsBlock());
   body.append(docsBlock());
   paintResults();
-  const check = h("button", { class: "btn", id: "kCheck", text: K.results ? U.checkAgain : U.checkBtn, onclick: runVerify });
+  const check = h("button", { class: "btn", id: "kCheck", html: ic(K.results ? "refresh" : "fact_check") + esc(K.results ? U.checkAgain : U.checkBtn), onclick: runVerify });
   foot.append(check);
   if (K.results && K.results.overall === "pass") {
-    check.className = "btn ghost"; foot.prepend(h("button", { class: "btn", id: "kPlace", text: U.place.replace("{x}", inr(S.quote ? S.quote.totals.monthly : 0)), onclick: placeOrder }));
+    check.className = "btn ghost";
+    foot.prepend(h("button", { class: "btn saffron", id: "kPlace", html: ic("shopping_cart_checkout") + esc(U.place.replace("{x}", inr(S.quote ? S.quote.totals.monthly : 0))), onclick: placeOrder }));
   }
   body.scrollTop = keepScroll;
 }
@@ -469,42 +482,43 @@ async function withdraw() {
 function demoBlock() {
   const U = ui();
   const sel = h("select", { id: "sample", "aria-label": U.demoT }, K.samples.map(s => h("option", { value: s.id, text: `${s.id} · ${s.issue}` })));
-  const btn = h("button", { class: "btn sm", text: U.fill, onclick: () => fillSample(sel.value, btn) });
-  return h("details", { class: "demo" }, h("summary", { text: U.demoT }), h("p", { style: "margin:6px 0 0;font-size:12.5px;color:var(--ink-2)", text: U.demoSub }), sel, btn);
+  const btn = h("button", { class: "btn sm saffron", html: ic("auto_fix_high", "sm") + esc(U.fill), onclick: () => fillSample(sel.value, btn) });
+  return h("details", { class: "demo" }, h("summary", { html: ic("construction", "sm") + esc(U.demoT.replace(/^🧪\s*/, "")) }), h("p", { text: U.demoSub }), sel, btn);
 }
 
 function idsBlock() {
   const U = ui();
   const b = h("div", { class: "blk", id: "kIds" });
-  b.append(h("h3", { html: `<span class="n ${K.gst && K.gst.ok || K.udyam && K.udyam.ok ? "ok" : ""}">1</span>${esc(U.idsT)}` }), h("p", { text: U.idsSub }));
-  const seg = h("div", { class: "seg", role: "group", "aria-label": U.haveGst },
-    h("button", { type: "button", "aria-pressed": K.hasGst, text: U.yes, onclick: () => setHasGst(true) }),
-    h("button", { type: "button", "aria-pressed": !K.hasGst, text: U.no, onclick: () => setHasGst(false) }));
-  b.append(h("label", { style: "display:block;font-size:13px;font-weight:700;margin-top:6px", text: U.haveGst }));
-  b.append(seg);
+  b.append(h("div", { class: "blk-h", html: `<span class="n ${K.gst && K.gst.ok || K.udyam && K.udyam.ok ? "ok" : ""}">1</span><h3>${esc(U.idsT)}</h3>` }), h("p", { text: U.idsSub }));
+  b.append(h("div", { class: "seg-row" }, h("label", { text: U.haveGst }),
+    h("div", { class: "seg", role: "group", "aria-label": U.haveGst },
+      h("button", { type: "button", "aria-pressed": String(K.hasGst), text: U.yes, onclick: () => setHasGst(true) }),
+      h("button", { type: "button", "aria-pressed": String(!K.hasGst), text: U.no, onclick: () => setHasGst(false) }))));
   if (K.hasGst) {
-    b.append(h("div", { class: "field" }, h("label", { for: "gstin", text: U.gstin }),
-      h("div", { class: "inp", id: "gstBox" }, h("input", { id: "gstin", maxlength: 15, placeholder: "22AAAAA0000A1Z5", autocomplete: "off", spellcheck: "false", value: K.gstVal, "aria-describedby": "gstMsg" }), h("span", { class: "cnt", id: "gstCnt" }), h("span", { class: "st", id: "gstSt" })),
+    b.append(h("div", { class: "field" }, h("div", { class: "field-h" }, h("label", { for: "gstin", text: U.gstin }), h("span", { class: "cnt", id: "gstCnt" })),
+      h("div", { class: "inp", id: "gstBox" }, h("input", { id: "gstin", maxlength: 15, placeholder: "22AAAAA0000A1Z5", autocomplete: "off", spellcheck: "false", value: K.gstVal, "aria-describedby": "gstMsg" }), h("span", { class: "st", id: "gstSt" })),
       h("div", { class: "msg", id: "gstMsg" }), h("div", { id: "bizBox" })));
   }
-  b.append(h("div", { class: "field" }, h("label", { for: "udyam", text: U.udyam }),
+  b.append(h("div", { class: "field" }, h("div", { class: "field-h" }, h("label", { for: "udyam", text: U.udyam })),
     h("div", { class: "inp", id: "udBox" }, h("input", { id: "udyam", maxlength: 24, placeholder: "UDYAM-MP-23-0001001", autocomplete: "off", spellcheck: "false", value: K.udyamVal }), h("span", { class: "st", id: "udSt" })),
     h("div", { class: "msg", id: "udMsg" })));
   queueMicrotask(() => {
     const g = $("#gstin"), u = $("#udyam");
     if (g) { g.oninput = () => { g.value = g.value.toUpperCase().replace(/\s/g, ""); K.gstVal = g.value; $("#gstCnt").textContent = U.chars.replace("{n}", g.value.length); if (g.value.length === 15) checkGst(); else setField("gst", "", ""); };
-      g.onblur = () => { if (g.value.length && g.value.length < 15) setField("gst", "bad", "This GST number looks wrong. Please check it.".replace(/.*/, S.lang === "hi" ? "यह GST नंबर गलत लगता है। कृपया जाँचें।" : "This GST number looks wrong. Please check it.")); };
-      if (K.gstVal.length === 15 && K.gst) paintGst(K.gst); else $("#gstCnt").textContent = K.gstVal ? U.chars.replace("{n}", K.gstVal.length) : ""; }
+      g.onblur = () => { if (g.value.length && g.value.length < 15) setField("gst", "bad", S.lang === "hi" ? "यह GST नंबर गलत लगता है। कृपया जाँचें।" : "This GST number looks wrong. Please check it."); };
+      if (K.gstVal.length === 15 && K.gst) paintGst(K.gst); $("#gstCnt").textContent = K.gstVal ? U.chars.replace("{n}", K.gstVal.length) : ""; }
     if (u) { u.oninput = () => { u.value = u.value.toUpperCase().replace(/\s/g, ""); K.udyamVal = u.value; if (u.value.length >= 19) checkUdyam(); else setField("ud", "", ""); };
       if (K.udyam) paintUdyam(K.udyam); }
   });
   return b;
 }
+const FIELD_ICON = { ok: "check_circle", bad: "cancel", warn: "warning" };
 function setField(which, state, msg) {
   const box = $(which === "gst" ? "#gstBox" : "#udBox"), m = $(which === "gst" ? "#gstMsg" : "#udMsg"), st = $(which === "gst" ? "#gstSt" : "#udSt");
   if (!box) return;
-  box.className = "inp " + state; m.className = "msg " + state; m.textContent = msg;
-  st.textContent = state === "ok" ? "✅" : state === "bad" ? "❌" : state === "warn" ? "⚠️" : "";
+  box.className = "inp " + state; m.className = "msg " + state;
+  m.innerHTML = msg ? ic(FIELD_ICON[state] || "info", "xs") + esc(msg.replace(/^✓\s*/, "")) : "";
+  st.innerHTML = FIELD_ICON[state] ? ic(FIELD_ICON[state], "fill") : "";
 }
 async function setHasGst(v) {
   if (K.hasGst === v) return;
@@ -521,20 +535,20 @@ async function checkGst() {
 }
 function paintGst(r) {
   const box = $("#bizBox"); if (!box) return;
-  if (r.ok) setField("gst", "ok", "✓ " + ui().gstActive);
+  if (r.ok) setField("gst", "ok", ui().gstActive);
   else setField("gst", r.stage === "status" ? "warn" : "bad", r.message);
-  box.innerHTML = r.legal_name ? `<div class="biz ${r.ok ? "" : "warn"}"><b>${esc(r.legal_name)}</b><span>${esc(r.masked)} · ${esc(r.address)}</span></div>` : "";
+  box.innerHTML = r.legal_name ? `<div class="biz ${r.ok ? "" : "warn"}"><b>${esc(r.legal_name)}</b><span>${esc(r.masked)}</span><span>${ic("location_on", "xs")}${esc(r.address)}</span></div>` : "";
 }
 async function checkUdyam() {
   const r = await api("/api/kyc/udyam", { session_id: S.sid, udyam_number: K.udyamVal }); K.udyam = r; paintUdyam(r);
 }
-function paintUdyam(r) { setField("ud", r.ok ? "ok" : "bad", r.ok ? "✓ " + r.name : r.message); }
+function paintUdyam(r) { setField("ud", r.ok ? "ok" : "bad", r.ok ? r.name : r.message); }
 
 function docTypes() { return K.hasGst ? ["gst_certificate", "udyam_certificate", "signatory_id", "address_proof"] : ["udyam_certificate", "signatory_id", "address_proof"]; }
 function docsBlock() {
   const U = ui();
   const b = h("div", { class: "blk", id: "kDocs" });
-  b.append(h("h3", { html: `<span class="n ${Object.keys(K.docs).length >= docTypes().length ? "ok" : ""}">2</span>${esc(U.docsT)}` }), h("p", { text: U.docsSub }));
+  b.append(h("div", { class: "blk-h", html: `<span class="n ${Object.keys(K.docs).length >= docTypes().length ? "ok" : ""}">2</span><h3>${esc(U.docsT)}</h3>` }), h("p", { text: U.docsSub }));
   docTypes().forEach(dt => b.append(slotEl(dt)));
   return b;
 }
@@ -543,14 +557,17 @@ function slotEl(dt) {
   const state = d ? (d.low ? "warn" : "ok") : "";
   const el = h("div", { class: "slot " + state, id: "slot-" + dt });
   const thumb = K.thumbs[dt];
-  el.append(thumb ? h("img", { src: thumb, alt: U.docNames[dt] }) : h("div", { class: "ico", "aria-hidden": "true", text: DOC_ICON[dt] }));
-  const m = h("div", { class: "m" }, h("b", { text: U.docNames[dt] }), h("small", { text: d ? (d.low ? "⚠️ " + U.hard : "✓ " + U.read) : U.docHints[dt] }));
+  el.append(thumb ? h("img", { src: thumb, alt: U.docNames[dt] }) : h("div", { class: "ico", html: ic(DOC_ICON[dt]) }));
+  const tag = d && !d.low ? `<span class="pill green">${ic("check", "xs")}${esc(U.read)}</span>` : "";
+  const m = h("div", { class: "m" }, h("b", { html: esc(U.docNames[dt]) + tag }), h("small", { text: d && d.low ? U.hard : U.docHints[dt] }));
   el.append(m);
-  if (d) el.append(h("button", { class: "x-btn", "aria-label": U.remove, text: "✕", onclick: async () => { const f = new FormData(); f.append("session_id", S.sid); f.append("doc_type", dt); await fetch("/api/kyc/remove", { method: "POST", body: f }); delete K.docs[dt]; delete K.thumbs[dt]; K.results = null; renderKyc(); } }));
-  else {
+  if (d) {
+    if (d.low) el.append(h("span", { style: "color:var(--saffron-2)", html: ic("warning", "fill") }));
+    el.append(h("button", { class: "x-btn", "aria-label": U.remove, html: ic("close", "sm"), onclick: async () => { const f = new FormData(); f.append("session_id", S.sid); f.append("doc_type", dt); await fetch("/api/kyc/remove", { method: "POST", body: f }); delete K.docs[dt]; delete K.thumbs[dt]; K.results = null; renderKyc(); } }));
+  } else {
     const cam = h("input", { type: "file", accept: "image/*", capture: "environment", class: "sr", id: "c-" + dt, onchange: e => e.target.files[0] && uploadDoc(dt, e.target.files[0]) });
     const fil = h("input", { type: "file", accept: "image/*,application/pdf", class: "sr", id: "f-" + dt, onchange: e => e.target.files[0] && uploadDoc(dt, e.target.files[0]) });
-    el.append(h("div", { class: "ups" }, h("label", { class: "up", for: "c-" + dt }, "📷 " + U.takePhoto), h("label", { class: "up", for: "f-" + dt }, "📎 " + U.uploadFile)), cam, fil);
+    el.append(h("div", { class: "ups" }, h("label", { class: "up", for: "c-" + dt, html: ic("photo_camera", "sm") + esc(U.takePhoto) }), h("label", { class: "up", for: "f-" + dt, html: ic("attach_file", "sm") + esc(U.uploadFile) })), cam, fil);
   }
   el.append(h("div", { class: "bar" }));
   return el;
@@ -640,14 +657,18 @@ function paintResults() {
   const U = ui(), r = K.results; if (!r) return;
   const warn = r.checks.some(c => c.severity === "warn");
   const kind = r.overall === "pass" ? (warn ? "warn" : "pass") : r.overall;
-  const B = { pass: [U.allGood, U.allGoodSub, "🎉"], fail: [U.failT, U.failSub, "🛠️"], review: [U.reviewT, U.reviewSub, "👀"], warn: [U.warnT, U.warnSub, "⚠️"] }[kind];
+  const B = { pass: [U.allGood, U.allGoodSub, "verified", "green"], fail: [U.failT, U.failSub, "build", "red"], review: [U.reviewT, U.reviewSub, "visibility", "blue"], warn: [U.warnT, U.warnSub, "warning", "saffron"] }[kind];
+  const SYM = { ok: "check", bad: "close", warn: "priority_high", rev: "help" };
   const rows = r.checks.map((c, i) => {
     const st = c.review ? "rev" : c.passed === false ? (c.severity === "warn" ? "warn" : "bad") : "ok";
-    const sym = { ok: "✓", bad: "✕", warn: "!", rev: "?" }[st];
-    const fix = (c.passed === false && c.severity !== "warn") || c.review ? `<button class="btn ghost sm fix" data-fix="${esc(c.doc || c.field || "")}">${esc(U.fix)}</button>` : "";
-    return `<div class="res" style="animation-delay:${i * 60}ms"><span class="s ${st}">${sym}</span><div><b>${esc(c.label)}</b><p>${esc(c.message)}</p></div>${fix}</div>`;
+    const fix = (c.passed === false && c.severity !== "warn") || c.review ? `<button class="fix" data-fix="${esc(c.doc || c.field || "")}">${esc(U.fix)}</button>` : "";
+    const badge = st === "ok" ? `<span class="pill solid-green">${esc(U.passed)}</span>` : st === "warn" ? `<span class="pill saffron">${esc(U.kindPill.warn)}</span>` : "";
+    return `<div class="res ${st}" style="animation-delay:${i * 60}ms"><span class="s ${st}">${ic(SYM[st])}</span><div class="rm"><b>${esc(c.label)}</b><p>${esc(c.message)}</p></div>${fix || badge}</div>`;
   }).join("");
-  box.innerHTML = `<div class="results"><div class="banner ${kind}"><span class="big">${B[2]}</span><div><b>${esc(B[0])}</b><span>${esc(B[1])}</span></div></div>${rows}</div>`;
+  box.innerHTML = `<div class="results">
+    <div class="banner ${kind}"><div class="ico">${ic(B[2], "lg")}</div><div><span class="pill solid-${B[3]}">${esc(U.kindPill[kind])}</span><b>${esc(B[0])}</b><span class="sub">${esc(B[1])}</span></div></div>
+    <div class="audit-h"><h4>${esc(U.auditT)}</h4><small>${esc(U.nChecks.replace("{n}", r.checks.length))}</small></div>
+    <div class="audit">${rows}</div></div>`;
   box.querySelectorAll("[data-fix]").forEach(b => b.onclick = () => {
     const t = b.dataset.fix; const target = t === "gstin" ? $("#gstin") : t === "udyam" ? $("#udyam") : $("#slot-" + t);
     if (!target) return; sheetScroll(target, "center");
