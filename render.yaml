@@ -1,0 +1,15 @@
+# Render blueprint: the FastAPI app (API + frontend). Vercel proxies /api and /sample-docs here.
+services:
+  - type: web
+    name: udyam-digital-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: OPENROUTER_API_KEY
+        sync: false   # entered in the Render dashboard, never committed

@@ -1,0 +1,13 @@
+# Vercel only serves the static frontend; the Python app runs on Render.
+.env
+.env.*
+!.env.example
+app/
+data/
+tests/
+scripts/
+requirements.txt
+render.yaml
+.playwright-mcp/
+__pycache__/
+.pytest_cache/
