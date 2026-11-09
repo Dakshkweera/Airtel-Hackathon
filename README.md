@@ -32,6 +32,90 @@ The prices in the sample catalogue are chosen so every total in the PRD matches
 (Clinic & Office Pro ₹3,742 + ₹1,500 setup, ₹4,241 with Cloud Backup, Dukaan Starter ₹1,497,
 Multi-Store ₹5,195 per site, Factory Connect ₹16,025).
 
+## Technical architecture
+
+```mermaid
+flowchart TB
+  subgraph Client["📱 Browser: owner's phone or desktop"]
+    UI["Chat app<br/>index.html + app.js"]
+    STT["Web Speech API<br/>speech to text"]
+    BVoice["speechSynthesis<br/>fallback voice"]
+    PDFJS["pdf.js<br/>PDF page to image"]
+    StaffUI["Staff lead list<br/>staff.html"]
+  end
+
+  subgraph Vercel["Vercel: static frontend"]
+    Static["static/ files"]
+    Rewrite["Rewrites<br/>/api/* and /sample-docs/*"]
+  end
+
+  subgraph Render["Render: FastAPI server · app/main.py"]
+    API["REST API<br/>session · chat · quote · kyc/* · order · tts · staff/leads · health"]
+    Advisor["advisor.py<br/>keyword + number parser<br/>one question at a time"]
+    Agent["llm_agent.py<br/>tool-calling LLM agent"]
+    Rules["rules.py<br/>eligibility · dependencies · pricing · plan choice"]
+    KYC["kyc.py<br/>GSTIN checksum + registry · Udyam<br/>name and address match · 90-day bill · ID expiry"]
+    Orders["orders.py<br/>order tracker"]
+    Voice["tts.py<br/>edge-tts audio stream"]
+    Loader["data.py + i18n.py<br/>CSV loader · Hindi/English text"]
+  end
+
+  subgraph Store["data/ · file-based sample data"]
+    Catalogue[("product_catalogue.csv")]
+    Registries[("mock GSTIN + Udyam registries")]
+    KycDocs[("kyc_documents/ K01-K12")]
+    Sessions[("sessions.json")]
+    TurnLog[("turn_log.jsonl")]
+  end
+
+  subgraph External["External services · optional"]
+    OpenRouter["OpenRouter<br/>chat model + vision model"]
+    Neural["Microsoft neural voices"]
+  end
+
+  Eval["scripts/eval_conversations.py<br/>74 messy messages + AI judge"]
+
+  STT -->|"live transcript"| UI
+  UI -->|"page load"| Static
+  UI -->|"fetch /api/*"| Rewrite
+  StaffUI --> Rewrite
+  PDFJS --> UI
+  Rewrite -->|"proxy"| API
+
+  API -->|"every chat turn"| Advisor
+  Advisor -->|"key set: free text"| Agent
+  Agent -.->|"model fails: fall back"| Advisor
+  Agent <-->|"messages + tool calls"| OpenRouter
+  Agent -->|"tools: save_profile, recommend_plan,<br/>check_eligibility, show_plan, start_paperwork…"| Rules
+  Advisor -->|"prices + eligibility"| Rules
+  Rules --> Loader
+  Loader --> Catalogue
+
+  API --> KYC
+  KYC -->|"document photo"| OpenRouter
+  KYC --> Registries
+  KYC -->|"no key: sample sidecar"| KycDocs
+  API --> Orders
+
+  API --> Voice
+  Voice --> Neural
+  Voice -.->|"503: unavailable"| BVoice
+
+  API --> Sessions
+  API --> TurnLog
+  Eval -.->|"replays turns"| API
+  Eval -.->|"judge"| OpenRouter
+```
+
+**How a chat turn flows:** the browser posts the owner's words (typed or transcribed) to `/api/chat`. The keyword advisor handles
+buttons and messages it can parse. With an `OPENROUTER_API_KEY`, free text goes to the LLM agent, which may only change the
+plan by calling tools backed by `rules.py`. Every rupee amount, eligibility decision and KYC pass/fail is computed in Python,
+never by the model. If the model fails, the keyword advisor answers instead. The session is saved to `sessions.json` and
+the turn is logged for the eval and debug view.
+
+**Deployment:** Vercel serves `static/` and proxies `/api/*` and `/sample-docs/*` to the FastAPI service on Render
+(`render.yaml`, health check `/api/health`). Run locally, the same FastAPI app serves both.
+
 ## Voice, live plan and memory
 
 - **Voice chat:** tap the 🎤 button. Your words appear live in the message box as you speak, are sent when you pause,
